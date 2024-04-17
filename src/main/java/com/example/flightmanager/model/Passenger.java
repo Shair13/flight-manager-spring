@@ -19,4 +19,10 @@ public class Passenger {
     private String name;
     private String surname;
     private String phone;
+
+    public void passengerUpdate(final Passenger source){
+        name = source.name;
+        surname = source.surname;
+        phone = source.phone;
+    }
 }

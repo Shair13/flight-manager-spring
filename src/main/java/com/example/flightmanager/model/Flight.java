@@ -27,4 +27,11 @@ public class Flight {
     @ManyToMany
     private Set<Passenger> passengers;
     private boolean archive;
+
+    public void flightUpdate(final Flight source){
+        number = source.number;
+        route = source.route;
+        date = source.date;
+        availableSeats = source.availableSeats;
+    }
 }
