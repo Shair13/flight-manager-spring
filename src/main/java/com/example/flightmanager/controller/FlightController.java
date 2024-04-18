@@ -1,9 +1,8 @@
 package com.example.flightmanager.controller;
 
 import com.example.flightmanager.model.Flight;
-import com.example.flightmanager.model.Passenger;
 import com.example.flightmanager.repository.FlightRepository;
-import com.example.flightmanager.repository.PassengerRepository;
+import com.example.flightmanager.service.FlightService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +16,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@ReservationExceptionProcessing
 @RequestMapping("/flights")
 public class FlightController {
 
     private final FlightRepository flightRepository;
-    private final PassengerRepository passengerRepository;
+    private final FlightService flightService;
 
     @PostMapping
     ResponseEntity<Flight> addNewFlight(@RequestBody Flight newFlight) {
@@ -63,38 +63,22 @@ public class FlightController {
     @Transactional
     @PatchMapping("/add/{flightId}/{passengerId}")
     public ResponseEntity<?> addPassengerToFlight(@PathVariable int flightId, @PathVariable int passengerId) {
-        if (!flightRepository.existsById(flightId) || !passengerRepository.existsById(passengerId)) {
-            return ResponseEntity.notFound().build();
-        }
-        Passenger passengerToAdd = passengerRepository.findById(passengerId).orElseThrow(RuntimeException::new);
-        flightRepository.findById(flightId).map(flight -> {
-            flight.getPassengers().add(passengerToAdd);
-            flight.setAvailableSeats(flight.getAvailableSeats() - 1);
-            return flight;
-        }).orElseThrow(RuntimeException::new);
-        return ResponseEntity.noContent().build();
+        Flight result = flightService.addPassenger(flightId, passengerId);
+        return ResponseEntity.ok(result);
     }
 
     @Transactional
     @PatchMapping("/delete/{flightId}/{passengerId}")
-    public ResponseEntity<?> removePassengerFromFlight(@PathVariable int flightId, @PathVariable int passengerId) {
-        if (!flightRepository.existsById(flightId) || !passengerRepository.existsById(passengerId)) {
-            return ResponseEntity.notFound().build();
-        }
-        Passenger passengerToRemove = passengerRepository.findById(passengerId).orElseThrow(RuntimeException::new);
-        flightRepository.findById(flightId).map(flight -> {
-            flight.getPassengers().remove(passengerToRemove);
-            flight.setAvailableSeats(flight.getAvailableSeats() + 1);
-            return flight;
-        }).orElseThrow(RuntimeException::new);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deletePassengerFromFlight(@PathVariable int flightId, @PathVariable int passengerId) {
+        Flight result = flightService.deletePassenger(flightId, passengerId);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/search")
     ResponseEntity<List<Flight>> searchFlights(
             @RequestParam(required = false) String route,
             @RequestParam(required = false) LocalDateTime date,
-            @RequestParam(required = false) Integer availableSeats){
+            @RequestParam(required = false) Integer availableSeats) {
         List<Flight> flights = flightRepository.findByRouteContainingAndDateAfterAndAvailableSeatsGreaterThanEqual(
                 route != null ? route : "",
                 date != null ? date : LocalDateTime.now(),
