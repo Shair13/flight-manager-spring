@@ -15,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@ExceptionProcessing
 @RequestMapping("/flights")
 public class FlightController {
 

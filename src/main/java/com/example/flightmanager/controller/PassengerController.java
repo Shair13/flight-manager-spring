@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@ExceptionProcessing
 @RequestMapping("/passengers")
 public class PassengerController {
 

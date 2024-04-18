@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestControllerAdvice(annotations = ExceptionProcessing.class)
+@RestControllerAdvice
 public class ExceptionControllerAdvice {
 
     @ExceptionHandler(FlightNotFoundException.class)
