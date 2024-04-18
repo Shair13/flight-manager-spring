@@ -6,7 +6,6 @@ import com.example.flightmanager.service.FlightService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -39,21 +38,18 @@ public class FlightController {
         return ResponseEntity.ok(flightService.getFlight(id));
     }
 
-    @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<?> updateFlight(@PathVariable int id, @RequestBody @Valid Flight toUpdate) {
         Flight result = flightService.updateFlight(id, toUpdate);
         return ResponseEntity.ok(result);
     }
 
-    @Transactional
     @PatchMapping("/add/{flightId}/{passengerId}")
     public ResponseEntity<?> addPassengerToFlight(@PathVariable int flightId, @PathVariable int passengerId) {
         Flight result = flightService.addPassenger(flightId, passengerId);
         return ResponseEntity.ok(result);
     }
 
-    @Transactional
     @PatchMapping("/delete/{flightId}/{passengerId}")
     public ResponseEntity<?> deletePassengerFromFlight(@PathVariable int flightId, @PathVariable int passengerId) {
         Flight result = flightService.deletePassenger(flightId, passengerId);

@@ -1,12 +1,11 @@
 package com.example.flightmanager.service;
 
 import com.example.flightmanager.exception.PassengerNotFoundException;
-import com.example.flightmanager.model.Flight;
 import com.example.flightmanager.model.Passenger;
 import com.example.flightmanager.repository.PassengerRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +17,7 @@ public class PassengerService {
         return passengerRepository.findById(id).orElseThrow(() -> new PassengerNotFoundException("Passenger with id = " + id + " not found"));
     }
 
+    @Transactional
     public Passenger updatePassenger(int id, Passenger toUpdate) {
         Passenger passenger = getPassenger(id);
         passenger.passengerUpdate(toUpdate);
@@ -25,7 +25,8 @@ public class PassengerService {
         return passenger;
     }
 
-    public void deletePassenger(int id){
+    @Transactional
+    public void deletePassenger(int id) {
         passengerRepository.delete(getPassenger(id));
     }
 

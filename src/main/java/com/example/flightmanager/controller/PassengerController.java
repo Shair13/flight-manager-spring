@@ -6,7 +6,6 @@ import com.example.flightmanager.service.PassengerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -38,15 +37,14 @@ public class PassengerController {
         return ResponseEntity.ok(passengerService.getPassenger(id));
     }
 
-    @Transactional
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateFlight(@PathVariable int id, @RequestBody @Valid Passenger toUpdate) {
+    public ResponseEntity<?> updatePassenger(@PathVariable int id, @RequestBody @Valid Passenger toUpdate) {
         Passenger result = passengerService.updatePassenger(id, toUpdate);
         return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<?> deleteFlight(@PathVariable int id) {
+    ResponseEntity<?> deletePassenger(@PathVariable int id) {
         passengerService.deletePassenger(id);
         return ResponseEntity.noContent().build();
     }

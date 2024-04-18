@@ -6,6 +6,7 @@ import com.example.flightmanager.model.Passenger;
 import com.example.flightmanager.repository.FlightRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,7 @@ public class FlightService {
         return flight;
     }
 
+    @Transactional
     public Flight deletePassenger(int flightId, int passengerId) {
         Flight flight = getFlight(flightId);
         Passenger passenger = passengerService.getPassenger(passengerId);
@@ -35,6 +37,7 @@ public class FlightService {
         return flight;
     }
 
+    @Transactional
     public Flight updateFlight(int id, Flight toUpdate) {
         Flight flight = getFlight(id);
         flight.flightUpdate(toUpdate);
@@ -42,6 +45,7 @@ public class FlightService {
         return flight;
     }
 
+    @Transactional
     public void deleteFlight(int id) {
         flightRepository.delete(getFlight(id));
     }
