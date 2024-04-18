@@ -5,6 +5,7 @@ import com.example.flightmanager.model.Flight;
 import com.example.flightmanager.service.FlightService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,9 +28,14 @@ public class FlightController {
         return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
     }
 
-    @GetMapping
+    @GetMapping(params = {"!sort", "!page", "!size"})
     List<FlightDTO> readAllFlights() {
         return flightService.readAllFlights();
+    }
+
+    @GetMapping
+    List<FlightDTO> readAllFlights(Pageable page) {
+        return flightService.readAllFlights(page);
     }
 
     @GetMapping("/{id}")

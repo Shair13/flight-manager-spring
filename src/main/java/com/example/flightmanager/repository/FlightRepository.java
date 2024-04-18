@@ -1,7 +1,8 @@
 package com.example.flightmanager.repository;
 
 import com.example.flightmanager.model.Flight;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.Optional;
 public interface FlightRepository {
 
     List<Flight> findAll();
+
+    Page<Flight> findAll(Pageable pageable);
 
     Optional<Flight> findById(Integer id);
 

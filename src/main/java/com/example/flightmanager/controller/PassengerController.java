@@ -5,6 +5,7 @@ import com.example.flightmanager.model.Passenger;
 import com.example.flightmanager.service.PassengerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +25,14 @@ public class PassengerController {
         return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
     }
 
-    @GetMapping
+    @GetMapping(params = {"!sort", "!page", "!size"})
     List<PassengerDTO> readAllPassengers() {
         return passengerService.readAllPassengers();
+    }
+
+    @GetMapping
+    List<PassengerDTO> readAllPassengers(Pageable page) {
+        return passengerService.readAllPassengers(page);
     }
 
     @GetMapping("/{id}")

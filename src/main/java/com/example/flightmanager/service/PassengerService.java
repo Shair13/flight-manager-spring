@@ -1,12 +1,11 @@
 package com.example.flightmanager.service;
 
-import com.example.flightmanager.dto.FlightDTO;
 import com.example.flightmanager.dto.PassengerDTO;
 import com.example.flightmanager.exception.PassengerNotFoundException;
-import com.example.flightmanager.model.Flight;
 import com.example.flightmanager.model.Passenger;
 import com.example.flightmanager.repository.PassengerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +24,11 @@ public class PassengerService {
 
     public List<PassengerDTO> readAllPassengers() {
         return passengerRepository.findAll().stream()
+                .map(Passenger::passengerToDTO).toList();
+    }
+
+    public List<PassengerDTO> readAllPassengers(Pageable pageable) {
+        return passengerRepository.findAll(pageable).stream()
                 .map(Passenger::passengerToDTO).toList();
     }
 

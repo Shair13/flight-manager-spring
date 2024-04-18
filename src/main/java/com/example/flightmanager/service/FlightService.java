@@ -6,6 +6,7 @@ import com.example.flightmanager.model.Flight;
 import com.example.flightmanager.model.Passenger;
 import com.example.flightmanager.repository.FlightRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +39,11 @@ public class FlightService {
 
     public List<FlightDTO> readAllFlights() {
         return flightRepository.findAll().stream()
+                .map(Flight::flightToDTO).toList();
+    }
+
+    public List<FlightDTO> readAllFlights(Pageable pageable) {
+        return flightRepository.findAll(pageable).stream()
                 .map(Flight::flightToDTO).toList();
     }
 

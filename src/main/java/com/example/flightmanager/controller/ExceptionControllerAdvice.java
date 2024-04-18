@@ -51,7 +51,7 @@ public class ExceptionControllerAdvice {
 
     Map<String, String> getMessage(String errorMessage) {
         Map<String, String> message = new HashMap<>();
-        message.put("error:", errorMessage);
+        message.put("error", errorMessage);
         return message;
     }
 }
