@@ -6,11 +6,15 @@ import com.example.flightmanager.exception.NoAvailableSeatsException;
 import com.example.flightmanager.exception.PassengerNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(annotations = ReservationExceptionProcessing.class)
-public class ReservationExceptionControllerAdvice {
+import java.util.HashMap;
+import java.util.Map;
+
+@RestControllerAdvice(annotations = ExceptionProcessing.class)
+public class ExceptionControllerAdvice {
 
     @ExceptionHandler(FlightNotFoundException.class)
     ResponseEntity<String> handleFlightNotFound(FlightNotFoundException e) {
@@ -30,5 +34,15 @@ public class ReservationExceptionControllerAdvice {
     @ExceptionHandler(DuplicatePassengerException.class)
     ResponseEntity<String> handleDuplicatePassenger(DuplicatePassengerException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    ResponseEntity<Map<Integer, String>> handleValidation(MethodArgumentNotValidException e){
+        Map<Integer, String> errors = new HashMap<>();
+        e.getBindingResult().getAllErrors().forEach(error -> {
+            String message = error.getDefaultMessage();
+            errors.put(errors.size(), message);
+        });
+        return ResponseEntity.badRequest().body(errors);
     }
 }

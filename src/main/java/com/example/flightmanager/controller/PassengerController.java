@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@ExceptionProcessing
 @RequestMapping("/passengers")
 public class PassengerController {
 
@@ -24,7 +25,7 @@ public class PassengerController {
 
 
     @PostMapping
-    ResponseEntity<Passenger> addNewPassenger(@RequestBody Passenger newPassenger) {
+    ResponseEntity<Passenger> addNewPassenger(@RequestBody @Valid Passenger newPassenger) {
         Passenger result = passengerRepository.save(newPassenger);
         return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
     }

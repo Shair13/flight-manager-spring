@@ -2,7 +2,10 @@ package com.example.flightmanager.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,10 +26,13 @@ public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Min(value = 1, message = "Flight number must be greater than 0.")
     private int number;
+    @NotBlank(message = "Route cannot be an empty field.")
     private String route;
+    @Future(message = "Must be a future date.")
     private LocalDateTime date;
-    @Min(value = 0, message = "Available seats must not be less than 0")
+    @Min(value = 0, message = "Available seats must not be less than 0.")
     private int availableSeats;
     @ManyToMany
     private Set<Passenger> passengers;
