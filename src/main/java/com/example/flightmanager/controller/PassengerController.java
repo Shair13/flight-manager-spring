@@ -1,9 +1,7 @@
 package com.example.flightmanager.controller;
 
-import com.example.flightmanager.model.Flight;
 import com.example.flightmanager.model.Passenger;
 import com.example.flightmanager.repository.PassengerRepository;
-import com.example.flightmanager.service.FlightService;
 import com.example.flightmanager.service.PassengerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
