@@ -1,10 +1,13 @@
 package com.example.flightmanager.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import java.time.LocalDateTime;
@@ -23,8 +26,25 @@ public class Flight {
     private int number;
     private String route;
     private LocalDateTime date;
+    @Min(value = 0, message = "Available seats must not be less than 0")
     private int availableSeats;
     @ManyToMany
     private Set<Passenger> passengers;
-    private boolean archive;
+
+    public void flightUpdate(final Flight source) {
+        number = source.number;
+        route = source.route;
+        date = source.date;
+        availableSeats = source.availableSeats;
+    }
+
+    public void addPassenger(Passenger passenger) {
+        passengers.add(passenger);
+        availableSeats--;
+    }
+
+    public void deletePassenger(Passenger passenger) {
+        passengers.remove(passenger);
+        availableSeats++;
+    }
 }
