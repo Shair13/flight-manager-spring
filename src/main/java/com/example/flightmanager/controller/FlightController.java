@@ -1,7 +1,7 @@
 package com.example.flightmanager.controller;
 
+import com.example.flightmanager.dto.FlightDTO;
 import com.example.flightmanager.model.Flight;
-import com.example.flightmanager.repository.FlightRepository;
 import com.example.flightmanager.service.FlightService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,58 +18,51 @@ import java.util.List;
 @RequestMapping("/flights")
 public class FlightController {
 
-    private final FlightRepository flightRepository;
+
     private final FlightService flightService;
 
     @PostMapping
-    ResponseEntity<Flight> addNewFlight(@RequestBody @Valid Flight newFlight) {
-        Flight result = flightRepository.save(newFlight);
+    ResponseEntity<FlightDTO> addNewFlight(@RequestBody @Valid Flight flight) {
+        FlightDTO result = flightService.addFlight(flight);
         return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
     }
 
     @GetMapping
-    ResponseEntity<List<Flight>> readAllFlights() {
-        return ResponseEntity.ok(flightRepository.findAll());
+    List<FlightDTO> readAllFlights() {
+        return flightService.readAllFlights();
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Flight> findFlightById(@PathVariable int id) {
-        return ResponseEntity.ok(flightService.getFlight(id));
+    FlightDTO findFlightById(@PathVariable int id) {
+        return flightService.getFlight(id).flightToDTO();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateFlight(@PathVariable int id, @RequestBody @Valid Flight toUpdate) {
-        Flight result = flightService.updateFlight(id, toUpdate);
-        return ResponseEntity.ok(result);
+    public FlightDTO updateFlight(@PathVariable int id, @RequestBody @Valid Flight toUpdate) {
+        return flightService.updateFlight(id, toUpdate).flightToDTO();
     }
 
     @PatchMapping("/add/{flightId}/{passengerId}")
-    public ResponseEntity<?> addPassengerToFlight(@PathVariable int flightId, @PathVariable int passengerId) {
-        Flight result = flightService.addPassenger(flightId, passengerId);
-        return ResponseEntity.ok(result);
+    FlightDTO addPassengerToFlight(@PathVariable int flightId, @PathVariable int passengerId) {
+        return flightService.addPassenger(flightId, passengerId);
     }
 
     @PatchMapping("/delete/{flightId}/{passengerId}")
-    public ResponseEntity<?> deletePassengerFromFlight(@PathVariable int flightId, @PathVariable int passengerId) {
-        Flight result = flightService.deletePassenger(flightId, passengerId);
-        return ResponseEntity.ok(result);
+    FlightDTO deletePassengerFromFlight(@PathVariable int flightId, @PathVariable int passengerId) {
+        return flightService.deletePassenger(flightId, passengerId);
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<?> deleteFlight(@PathVariable int id) {
+    ResponseEntity<Void> deleteFlight(@PathVariable int id) {
         flightService.deleteFlight(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/search")
-    ResponseEntity<List<Flight>> searchFlights(
+    List<FlightDTO> searchFlights(
             @RequestParam(required = false) String route,
             @RequestParam(required = false) LocalDateTime date,
             @RequestParam(required = false) Integer availableSeats) {
-        List<Flight> flights = flightRepository.findByRouteContainingAndDateAfterAndAvailableSeatsGreaterThanEqual(
-                route != null ? route : "",
-                date != null ? date : LocalDateTime.now(),
-                availableSeats != null ? availableSeats : 0);
-        return ResponseEntity.ok(flights);
+        return flightService.search(route, date, availableSeats);
     }
 }

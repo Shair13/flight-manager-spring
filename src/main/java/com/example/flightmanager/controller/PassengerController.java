@@ -1,7 +1,7 @@
 package com.example.flightmanager.controller;
 
+import com.example.flightmanager.dto.PassengerDTO;
 import com.example.flightmanager.model.Passenger;
-import com.example.flightmanager.repository.PassengerRepository;
 import com.example.flightmanager.service.PassengerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,34 +16,31 @@ import java.util.List;
 @RequestMapping("/passengers")
 public class PassengerController {
 
-    private final PassengerRepository passengerRepository;
     private final PassengerService passengerService;
 
-
     @PostMapping
-    ResponseEntity<Passenger> addNewPassenger(@RequestBody @Valid Passenger newPassenger) {
-        Passenger result = passengerRepository.save(newPassenger);
+    ResponseEntity<PassengerDTO> addNewPassenger(@RequestBody @Valid Passenger passenger) {
+        PassengerDTO result = passengerService.addPassenger(passenger);
         return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
     }
 
     @GetMapping
-    ResponseEntity<List<Passenger>> readAllPassengers() {
-        return ResponseEntity.ok(passengerRepository.findAll());
+    List<PassengerDTO> readAllPassengers() {
+        return passengerService.readAllPassengers();
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Passenger> findPassengerById(@PathVariable int id) {
-        return ResponseEntity.ok(passengerService.getPassenger(id));
+    PassengerDTO findPassengerById(@PathVariable int id) {
+        return passengerService.getPassenger(id).passengerToDTO();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updatePassenger(@PathVariable int id, @RequestBody @Valid Passenger toUpdate) {
-        Passenger result = passengerService.updatePassenger(id, toUpdate);
-        return ResponseEntity.ok(result);
+    public PassengerDTO updatePassenger(@PathVariable int id, @RequestBody @Valid Passenger toUpdate) {
+        return passengerService.updatePassenger(id, toUpdate);
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<?> deletePassenger(@PathVariable int id) {
+    ResponseEntity<Void> deletePassenger(@PathVariable int id) {
         passengerService.deletePassenger(id);
         return ResponseEntity.noContent().build();
     }
