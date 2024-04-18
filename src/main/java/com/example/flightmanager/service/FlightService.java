@@ -9,6 +9,7 @@ import com.example.flightmanager.model.Passenger;
 import com.example.flightmanager.repository.FlightRepository;
 import com.example.flightmanager.repository.PassengerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -39,6 +40,18 @@ public class FlightService {
         return flight;
     }
 
+    public Flight updateFlight(int id, Flight toUpdate) {
+        Flight flight = getFlight(id);
+        flight.flightUpdate(toUpdate);
+        flightRepository.save(flight);
+        return flight;
+    }
+
+    public void deleteFlight(int id) {
+        Flight flight = getFlight(id);
+        flightRepository.delete(flight);
+    }
+
 
     void checkAvailableSeats(Flight flight) {
         if (flight.getAvailableSeats() <= 0) {
@@ -52,7 +65,7 @@ public class FlightService {
         }
     }
 
-    Flight getFlight(int id) {
+    public Flight getFlight(int id) {
         return flightRepository.findById(id).orElseThrow(() -> new FlightNotFoundException("Flight with id = " + id + " not found"));
     }
 

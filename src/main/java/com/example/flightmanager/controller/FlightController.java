@@ -36,28 +36,20 @@ public class FlightController {
 
     @GetMapping("/{id}")
     ResponseEntity<Flight> findFlightById(@PathVariable int id) {
-        return flightRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(flightService.getFlight(id));
     }
 
     @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<?> updateFlight(@PathVariable int id, @RequestBody @Valid Flight toUpdate) {
-        if (!flightRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        flightRepository.findById(id).ifPresent(flight -> flight.flightUpdate(toUpdate));
-        return ResponseEntity.noContent().build();
+        Flight result = flightService.updateFlight(id, toUpdate);
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/{id}")
     ResponseEntity<?> deleteFlight(@PathVariable int id) {
-        if (!flightRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        flightRepository.deleteById(id);
-        return ResponseEntity.ok(id);
+        flightService.deleteFlight(id);
+        return ResponseEntity.noContent().build();
     }
 
     @Transactional
