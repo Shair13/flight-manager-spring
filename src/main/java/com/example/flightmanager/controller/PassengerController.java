@@ -35,7 +35,7 @@ public class PassengerController {
     }
 
     @PutMapping("/{id}")
-    public PassengerDTO updatePassenger(@PathVariable int id, @RequestBody @Valid Passenger toUpdate) {
+    PassengerDTO updatePassenger(@PathVariable int id, @RequestBody @Valid Passenger toUpdate) {
         return passengerService.updatePassenger(id, toUpdate);
     }
 

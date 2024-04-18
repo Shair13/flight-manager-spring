@@ -38,7 +38,7 @@ public class FlightController {
     }
 
     @PutMapping("/{id}")
-    public FlightDTO updateFlight(@PathVariable int id, @RequestBody @Valid Flight toUpdate) {
+    FlightDTO updateFlight(@PathVariable int id, @RequestBody @Valid Flight toUpdate) {
         return flightService.updateFlight(id, toUpdate).flightToDTO();
     }
 
