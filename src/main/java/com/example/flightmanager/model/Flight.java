@@ -1,5 +1,7 @@
 package com.example.flightmanager.model;
 
+import com.example.flightmanager.exception.DuplicatePassengerException;
+import com.example.flightmanager.exception.NoAvailableSeatsException;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Future;
@@ -52,5 +54,17 @@ public class Flight {
     public void deletePassenger(Passenger passenger) {
         passengers.remove(passenger);
         availableSeats++;
+    }
+
+    public void checkAvailableSeats(Flight flight) {
+        if (flight.getAvailableSeats() <= 0) {
+            throw new NoAvailableSeatsException("No available seats on flight number LO" + flight.getNumber() + ".");
+        }
+    }
+
+    public void checkDuplicatePassenger(Flight flight, Passenger passenger) {
+        if (flight.getPassengers().contains(passenger)) {
+            throw new DuplicatePassengerException("Passenger with id " + passenger.getId() + " is already added to this flight");
+        }
     }
 }
