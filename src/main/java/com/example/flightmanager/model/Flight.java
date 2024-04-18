@@ -1,19 +1,16 @@
 package com.example.flightmanager.model;
 
+import com.example.flightmanager.dto.FlightDTO;
 import com.example.flightmanager.exception.DuplicatePassengerException;
 import com.example.flightmanager.exception.NoAvailableSeatsException;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -38,6 +35,14 @@ public class Flight {
     private int availableSeats;
     @ManyToMany
     private Set<Passenger> passengers;
+
+    public Flight(int number, String route, LocalDateTime date, int availableSeats, Set<Passenger> passengers) {
+        this.number = number;
+        this.route = route;
+        this.date = date;
+        this.availableSeats = availableSeats;
+        this.passengers = passengers;
+    }
 
     public void flightUpdate(final Flight source) {
         number = source.number;
@@ -66,5 +71,9 @@ public class Flight {
         if (flight.getPassengers().contains(passenger)) {
             throw new DuplicatePassengerException("Passenger with id " + passenger.getId() + " is already added to this flight");
         }
+    }
+
+    public FlightDTO flightToDTO() {
+        return new FlightDTO(id, number, route, date, availableSeats, passengers);
     }
 }

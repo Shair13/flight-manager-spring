@@ -1,5 +1,6 @@
 package com.example.flightmanager.service;
 
+import com.example.flightmanager.dto.FlightDTO;
 import com.example.flightmanager.exception.FlightNotFoundException;
 import com.example.flightmanager.model.Flight;
 import com.example.flightmanager.model.Passenger;
@@ -8,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FlightService {
@@ -15,7 +19,12 @@ public class FlightService {
     private final FlightRepository flightRepository;
     private final PassengerService passengerService;
 
-    public Flight addPassenger(int flightId, int passengerId) {
+    @Transactional
+    public FlightDTO addFlight(Flight flight) {
+        return flightRepository.save(flight).flightToDTO();
+    }
+
+    public FlightDTO addPassenger(int flightId, int passengerId) {
         Flight flight = getFlight(flightId);
         Passenger passenger = passengerService.getPassenger(passengerId);
 
@@ -24,17 +33,22 @@ public class FlightService {
 
         flight.addPassenger(passenger);
         flightRepository.save(flight);
-        return flight;
+        return flight.flightToDTO();
+    }
+
+    public List<FlightDTO> readAllFlights() {
+        return flightRepository.findAll().stream()
+                .map(Flight::flightToDTO).toList();
     }
 
     @Transactional
-    public Flight deletePassenger(int flightId, int passengerId) {
+    public FlightDTO deletePassenger(int flightId, int passengerId) {
         Flight flight = getFlight(flightId);
         Passenger passenger = passengerService.getPassenger(passengerId);
 
         flight.deletePassenger(passenger);
         flightRepository.save(flight);
-        return flight;
+        return flight.flightToDTO();
     }
 
     @Transactional
@@ -52,5 +66,14 @@ public class FlightService {
 
     public Flight getFlight(int id) {
         return flightRepository.findById(id).orElseThrow(() -> new FlightNotFoundException("Flight with id = " + id + " not found"));
+    }
+
+    public List<FlightDTO> search(String route, LocalDateTime date, Integer availableSeats) {
+        return flightRepository.findByRouteContainingAndDateAfterAndAvailableSeatsGreaterThanEqual(
+                        route != null ? route : "",
+                        date != null ? date : LocalDateTime.now(),
+                        availableSeats != null ? availableSeats : 0).stream()
+                .map(Flight::flightToDTO)
+                .toList();
     }
 }
