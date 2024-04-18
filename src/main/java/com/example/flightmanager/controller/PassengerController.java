@@ -3,6 +3,8 @@ package com.example.flightmanager.controller;
 import com.example.flightmanager.model.Flight;
 import com.example.flightmanager.model.Passenger;
 import com.example.flightmanager.repository.PassengerRepository;
+import com.example.flightmanager.service.FlightService;
+import com.example.flightmanager.service.PassengerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +19,9 @@ import java.util.List;
 @RequestMapping("/passengers")
 public class PassengerController {
 
-   private final PassengerRepository passengerRepository;
+    private final PassengerRepository passengerRepository;
+    private final PassengerService passengerService;
+
 
     @PostMapping
     ResponseEntity<Passenger> addNewPassenger(@RequestBody Passenger newPassenger) {
@@ -32,27 +36,19 @@ public class PassengerController {
 
     @GetMapping("/{id}")
     ResponseEntity<Passenger> findPassengerById(@PathVariable int id) {
-        return passengerRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(passengerService.getPassenger(id));
     }
 
     @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<?> updateFlight(@PathVariable int id, @RequestBody @Valid Passenger toUpdate) {
-        if (!passengerRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        passengerRepository.findById(id).ifPresent(passenger -> passenger.passengerUpdate(toUpdate));
-        return ResponseEntity.noContent().build();
+        Passenger result = passengerService.updatePassenger(id, toUpdate);
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/{id}")
     ResponseEntity<?> deleteFlight(@PathVariable int id) {
-        if (!passengerRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        passengerRepository.deleteById(id);
-        return ResponseEntity.ok(id);
+        passengerService.deletePassenger(id);
+        return ResponseEntity.noContent().build();
     }
 }

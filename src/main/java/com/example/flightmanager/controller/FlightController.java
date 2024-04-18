@@ -46,12 +46,6 @@ public class FlightController {
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("/{id}")
-    ResponseEntity<?> deleteFlight(@PathVariable int id) {
-        flightService.deleteFlight(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @Transactional
     @PatchMapping("/add/{flightId}/{passengerId}")
     public ResponseEntity<?> addPassengerToFlight(@PathVariable int flightId, @PathVariable int passengerId) {
@@ -64,6 +58,12 @@ public class FlightController {
     public ResponseEntity<?> deletePassengerFromFlight(@PathVariable int flightId, @PathVariable int passengerId) {
         Flight result = flightService.deletePassenger(flightId, passengerId);
         return ResponseEntity.ok(result);
+    }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<?> deleteFlight(@PathVariable int id) {
+        flightService.deleteFlight(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/search")
