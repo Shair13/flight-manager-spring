@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@ReservationExceptionProcessing
+@ExceptionProcessing
 @RequestMapping("/flights")
 public class FlightController {
 
@@ -24,7 +24,7 @@ public class FlightController {
     private final FlightService flightService;
 
     @PostMapping
-    ResponseEntity<Flight> addNewFlight(@RequestBody Flight newFlight) {
+    ResponseEntity<Flight> addNewFlight(@RequestBody @Valid Flight newFlight) {
         Flight result = flightRepository.save(newFlight);
         return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
     }

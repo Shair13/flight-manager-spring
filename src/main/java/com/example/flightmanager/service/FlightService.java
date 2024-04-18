@@ -51,7 +51,7 @@ public class FlightService {
 
     void checkAvailableSeats(Flight flight) {
         if (flight.getAvailableSeats() <= 0) {
-            throw new NoAvailableSeatsException("No available seats on flight number " + flight.getNumber() + ".");
+            throw new NoAvailableSeatsException("No available seats on flight number LO" + flight.getNumber() + ".");
         }
     }
 

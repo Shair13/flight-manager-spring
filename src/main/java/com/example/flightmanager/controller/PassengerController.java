@@ -1,9 +1,7 @@
 package com.example.flightmanager.controller;
 
-import com.example.flightmanager.model.Flight;
 import com.example.flightmanager.model.Passenger;
 import com.example.flightmanager.repository.PassengerRepository;
-import com.example.flightmanager.service.FlightService;
 import com.example.flightmanager.service.PassengerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@ExceptionProcessing
 @RequestMapping("/passengers")
 public class PassengerController {
 
@@ -24,7 +23,7 @@ public class PassengerController {
 
 
     @PostMapping
-    ResponseEntity<Passenger> addNewPassenger(@RequestBody Passenger newPassenger) {
+    ResponseEntity<Passenger> addNewPassenger(@RequestBody @Valid Passenger newPassenger) {
         Passenger result = passengerRepository.save(newPassenger);
         return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
     }
