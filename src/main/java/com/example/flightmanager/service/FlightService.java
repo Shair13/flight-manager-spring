@@ -52,11 +52,11 @@ public class FlightService {
     }
 
     @Transactional
-    public Flight updateFlight(int id, Flight toUpdate) {
+    public FlightDTO updateFlight(int id, Flight toUpdate) {
         Flight flight = getFlight(id);
         flight.flightUpdate(toUpdate);
         flightRepository.save(flight);
-        return flight;
+        return flight.flightToDTO();
     }
 
     @Transactional
