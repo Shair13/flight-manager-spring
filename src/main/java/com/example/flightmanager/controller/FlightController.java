@@ -53,7 +53,7 @@ public class FlightController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<?> deleteFlight(@PathVariable int id) {
+    ResponseEntity<Void> deleteFlight(@PathVariable int id) {
         flightService.deleteFlight(id);
         return ResponseEntity.noContent().build();
     }
