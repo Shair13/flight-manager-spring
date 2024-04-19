@@ -1,13 +1,9 @@
 package com.example.flightmanager.model;
 
-import com.example.flightmanager.dto.FlightDTO;
-import com.example.flightmanager.exception.DuplicatePassengerException;
-import com.example.flightmanager.exception.NoAvailableSeatsException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +12,6 @@ import java.util.Set;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "flights")
 public class Flight {

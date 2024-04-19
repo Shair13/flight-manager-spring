@@ -10,9 +10,8 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.Set;
-
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class FlightDTO {
     private int id;
     @Min(value = 1, message = "Flight number must be greater than 0.")

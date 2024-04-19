@@ -1,15 +1,12 @@
 package com.example.flightmanager.model;
 
-import com.example.flightmanager.dto.PassengerDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "passengers")
 public class Passenger {
@@ -29,7 +26,7 @@ public class Passenger {
         this.phone = phone;
     }
 
-    public void passengerUpdate(final Passenger source){
+    public void passengerUpdate(final Passenger source) {
         name = source.name;
         surname = source.surname;
         phone = source.phone;
