@@ -23,49 +23,50 @@ public class FlightController {
     private final FlightService flightService;
 
     @PostMapping
-    ResponseEntity<FlightDTO> addNewFlight(@RequestBody @Valid Flight flight) {
-        FlightDTO result = flightService.addFlight(flight);
+    public ResponseEntity<FlightDTO> addNewFlight(@RequestBody @Valid FlightDTO flightDTO) {
+        FlightDTO result = flightService.addFlight(flightDTO);
         return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
     }
 
     @GetMapping(params = {"!sort", "!page", "!size"})
-    List<FlightDTO> readAllFlights() {
+    public List<FlightDTO> readAllFlights() {
         return flightService.readAllFlights();
     }
 
     @GetMapping
-    List<FlightDTO> readAllFlights(Pageable page) {
+    public List<FlightDTO> readAllFlights(Pageable page) {
         return flightService.readAllFlights(page);
     }
 
     @GetMapping("/{id}")
-    FlightDTO findFlightById(@PathVariable int id) {
-        return flightService.getFlight(id).flightToDTO();
+    public FlightDTO findFlightById(@PathVariable int id) {
+        Flight flight = flightService.getFlight(id);
+        return new FlightDTO(flight);
     }
 
     @PutMapping("/{id}")
-    FlightDTO updateFlight(@PathVariable int id, @RequestBody @Valid Flight toUpdate) {
+    public FlightDTO updateFlight(@PathVariable int id, @RequestBody @Valid Flight toUpdate) {
         return flightService.updateFlight(id, toUpdate);
     }
 
     @PatchMapping("/add/{flightId}/{passengerId}")
-    FlightDTO addPassengerToFlight(@PathVariable int flightId, @PathVariable int passengerId) {
+    public FlightDTO addPassengerToFlight(@PathVariable int flightId, @PathVariable int passengerId) {
         return flightService.addPassenger(flightId, passengerId);
     }
 
     @PatchMapping("/delete/{flightId}/{passengerId}")
-    FlightDTO deletePassengerFromFlight(@PathVariable int flightId, @PathVariable int passengerId) {
+    public FlightDTO deletePassengerFromFlight(@PathVariable int flightId, @PathVariable int passengerId) {
         return flightService.deletePassenger(flightId, passengerId);
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteFlight(@PathVariable int id) {
+    public ResponseEntity<Void> deleteFlight(@PathVariable int id) {
         flightService.deleteFlight(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/search")
-    List<FlightDTO> searchFlights(
+    public List<FlightDTO> searchFlights(
             @RequestParam(required = false) String route,
             @RequestParam(required = false) LocalDateTime date,
             @RequestParam(required = false) Integer availableSeats) {

@@ -6,10 +6,12 @@ import com.example.flightmanager.exception.NoAvailableSeatsException;
 import com.example.flightmanager.exception.PassengerNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +36,16 @@ public class ExceptionControllerAdvice {
 
     @ExceptionHandler(DuplicatePassengerException.class)
     ResponseEntity<Map<String, String>> handleDuplicatePassenger(DuplicatePassengerException e) {
+        return ResponseEntity.badRequest().body(getMessage(e.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    ResponseEntity<Map<String, String>> handleIncorrectValue(MethodArgumentTypeMismatchException e) {
+        return ResponseEntity.badRequest().body(getMessage(e.getMessage()));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    ResponseEntity<Map<String, String>> handleIncorrectValue(HttpMessageNotReadableException e) {
         return ResponseEntity.badRequest().body(getMessage(e.getMessage()));
     }
 
