@@ -1,6 +1,10 @@
 package com.example.flightmanager.dto;
 
+import com.example.flightmanager.model.Flight;
 import com.example.flightmanager.model.Passenger;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,9 +15,17 @@ import java.util.Set;
 @Getter
 public class FlightDTO {
     private int id;
+    @Min(value = 1, message = "Flight number must be greater than 0.")
     private int number;
+    @NotBlank(message = "Route cannot be an empty field.")
     private String route;
+    @Future(message = "Must be a future date.")
     private LocalDateTime date;
+    @Min(value = 0, message = "Available seats must not be less than 0.")
     private int availableSeats;
     private Set<Passenger> passengers;
+
+    public Flight DtoToFlight(){
+        return new Flight(number, route, date, availableSeats, passengers);
+    }
 }

@@ -21,8 +21,8 @@ public class FlightService {
     private final PassengerService passengerService;
 
     @Transactional
-    public FlightDTO addFlight(Flight flight) {
-        return flightRepository.save(flight).flightToDTO();
+    public FlightDTO addFlight(FlightDTO flightDTO) {
+        return flightRepository.save(flightDTO.DtoToFlight()).flightToDto();
     }
 
     public FlightDTO addPassenger(int flightId, int passengerId) {
@@ -34,17 +34,17 @@ public class FlightService {
 
         flight.addPassenger(passenger);
         flightRepository.save(flight);
-        return flight.flightToDTO();
+        return flight.flightToDto();
     }
 
     public List<FlightDTO> readAllFlights() {
         return flightRepository.findAll().stream()
-                .map(Flight::flightToDTO).toList();
+                .map(Flight::flightToDto).toList();
     }
 
     public List<FlightDTO> readAllFlights(Pageable pageable) {
         return flightRepository.findAll(pageable).stream()
-                .map(Flight::flightToDTO).toList();
+                .map(Flight::flightToDto).toList();
     }
 
     @Transactional
@@ -54,7 +54,7 @@ public class FlightService {
 
         flight.deletePassenger(passenger);
         flightRepository.save(flight);
-        return flight.flightToDTO();
+        return flight.flightToDto();
     }
 
     @Transactional
@@ -62,7 +62,7 @@ public class FlightService {
         Flight flight = getFlight(id);
         flight.flightUpdate(toUpdate);
         flightRepository.save(flight);
-        return flight.flightToDTO();
+        return flight.flightToDto();
     }
 
     @Transactional
@@ -79,7 +79,7 @@ public class FlightService {
                         route != null ? route : "",
                         date != null ? date : LocalDateTime.now(),
                         availableSeats != null ? availableSeats : 0).stream()
-                .map(Flight::flightToDTO)
+                .map(Flight::flightToDto)
                 .toList();
     }
 }

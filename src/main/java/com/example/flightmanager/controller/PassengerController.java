@@ -20,8 +20,8 @@ public class PassengerController {
     private final PassengerService passengerService;
 
     @PostMapping
-    ResponseEntity<PassengerDTO> addNewPassenger(@RequestBody @Valid Passenger passenger) {
-        PassengerDTO result = passengerService.addPassenger(passenger);
+    ResponseEntity<PassengerDTO> addNewPassenger(@RequestBody @Valid PassengerDTO passengerDTO) {
+        PassengerDTO result = passengerService.addPassenger(passengerDTO);
         return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
     }
 
@@ -37,7 +37,7 @@ public class PassengerController {
 
     @GetMapping("/{id}")
     PassengerDTO findPassengerById(@PathVariable int id) {
-        return passengerService.getPassenger(id).passengerToDTO();
+        return passengerService.getPassenger(id).passengerToDto();
     }
 
     @PutMapping("/{id}")

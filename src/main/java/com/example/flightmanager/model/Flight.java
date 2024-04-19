@@ -71,7 +71,7 @@ public class Flight {
         }
     }
 
-    public FlightDTO flightToDTO() {
+    public FlightDTO flightToDto() {
         return new FlightDTO(id, number, route, date, availableSeats, passengers);
     }
 }

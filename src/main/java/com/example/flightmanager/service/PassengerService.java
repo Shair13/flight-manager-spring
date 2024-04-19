@@ -18,18 +18,18 @@ public class PassengerService {
     private final PassengerRepository passengerRepository;
 
     @Transactional
-    public PassengerDTO addPassenger(Passenger passenger) {
-        return passengerRepository.save(passenger).passengerToDTO();
+    public PassengerDTO addPassenger(PassengerDTO passengerDTO) {
+        return passengerRepository.save(passengerDTO.DtoToPassenger()).passengerToDto();
     }
 
     public List<PassengerDTO> readAllPassengers() {
         return passengerRepository.findAll().stream()
-                .map(Passenger::passengerToDTO).toList();
+                .map(Passenger::passengerToDto).toList();
     }
 
     public List<PassengerDTO> readAllPassengers(Pageable pageable) {
         return passengerRepository.findAll(pageable).stream()
-                .map(Passenger::passengerToDTO).toList();
+                .map(Passenger::passengerToDto).toList();
     }
 
     public Passenger getPassenger(int id) {
@@ -41,7 +41,7 @@ public class PassengerService {
         Passenger passenger = getPassenger(id);
         passenger.passengerUpdate(toUpdate);
         passengerRepository.save(passenger);
-        return passenger.passengerToDTO();
+        return passenger.passengerToDto();
     }
 
     @Transactional
