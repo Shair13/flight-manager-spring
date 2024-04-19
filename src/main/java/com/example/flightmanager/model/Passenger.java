@@ -34,8 +34,4 @@ public class Passenger {
         surname = source.surname;
         phone = source.phone;
     }
-
-    public PassengerDTO passengerToDto() {
-        return new PassengerDTO(id, name, surname, phone);
-    }
 }

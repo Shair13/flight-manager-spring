@@ -59,19 +59,11 @@ public class Flight {
         availableSeats++;
     }
 
-    public void checkAvailableSeats(Flight flight) {
-        if (flight.getAvailableSeats() <= 0) {
-            throw new NoAvailableSeatsException("No available seats on flight number LO" + flight.getNumber() + ".");
-        }
+    public boolean checkAvailableSeats() {
+        return availableSeats < 1;
     }
 
-    public void checkDuplicatePassenger(Flight flight, Passenger passenger) {
-        if (flight.getPassengers().contains(passenger)) {
-            throw new DuplicatePassengerException("Passenger with id " + passenger.getId() + " is already added to this flight");
-        }
-    }
-
-    public FlightDTO flightToDto() {
-        return new FlightDTO(id, number, route, date, availableSeats, passengers);
+    public boolean checkDuplicatePassenger(Passenger passenger) {
+        return passengers.contains(passenger);
     }
 }

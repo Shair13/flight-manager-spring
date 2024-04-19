@@ -25,6 +25,15 @@ public class FlightDTO {
     private int availableSeats;
     private Set<Passenger> passengers;
 
+    public FlightDTO(Flight flight) {
+        this.id = flight.getId();
+        this.number = flight.getNumber();
+        this.route = flight.getRoute();
+        this.date = flight.getDate();
+        this.availableSeats = flight.getAvailableSeats();
+        this.passengers = flight.getPassengers();
+    }
+
     public Flight DtoToFlight(){
         return new Flight(number, route, date, availableSeats, passengers);
     }

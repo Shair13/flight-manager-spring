@@ -40,7 +40,8 @@ public class FlightController {
 
     @GetMapping("/{id}")
     public FlightDTO findFlightById(@PathVariable int id) {
-        return flightService.getFlight(id).flightToDto();
+        Flight flight = flightService.getFlight(id);
+        return new FlightDTO(flight);
     }
 
     @PutMapping("/{id}")

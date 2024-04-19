@@ -19,21 +19,27 @@ public class PassengerService {
 
     @Transactional
     public PassengerDTO addPassenger(PassengerDTO passengerDTO) {
-        return passengerRepository.save(passengerDTO.DtoToPassenger()).passengerToDto();
+        Passenger passenger = passengerRepository.save(passengerDTO.DtoToPassenger());
+        return new PassengerDTO(passenger);
     }
 
     public List<PassengerDTO> readAllPassengers() {
         return passengerRepository.findAll().stream()
-                .map(Passenger::passengerToDto).toList();
+                .map(PassengerDTO::new).toList();
     }
 
     public List<PassengerDTO> readAllPassengers(Pageable pageable) {
         return passengerRepository.findAll(pageable).stream()
-                .map(Passenger::passengerToDto).toList();
+                .map(PassengerDTO::new).toList();
     }
 
     public Passenger getPassenger(int id) {
         return passengerRepository.findById(id).orElseThrow(() -> new PassengerNotFoundException("Passenger with id = " + id + " not found"));
+    }
+
+    public PassengerDTO getPassengerDto(int id) {
+        Passenger passenger = passengerRepository.findById(id).orElseThrow(() -> new PassengerNotFoundException("Passenger with id = " + id + " not found"));
+        return new PassengerDTO(passenger);
     }
 
     @Transactional
@@ -41,12 +47,11 @@ public class PassengerService {
         Passenger passenger = getPassenger(id);
         passenger.passengerUpdate(toUpdate);
         passengerRepository.save(passenger);
-        return passenger.passengerToDto();
+        return new PassengerDTO(passenger);
     }
 
     @Transactional
     public void deletePassenger(int id) {
         passengerRepository.delete(getPassenger(id));
     }
-
 }

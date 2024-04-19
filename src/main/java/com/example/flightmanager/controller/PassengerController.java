@@ -37,7 +37,7 @@ public class PassengerController {
 
     @GetMapping("/{id}")
     public PassengerDTO findPassengerById(@PathVariable int id) {
-        return passengerService.getPassenger(id).passengerToDto();
+        return passengerService.getPassengerDto(id);
     }
 
     @PutMapping("/{id}")

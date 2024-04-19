@@ -16,6 +16,13 @@ public class PassengerDTO {
     @NotBlank(message = "Phone cannot be an empty field.")
     private String phone;
 
+    public PassengerDTO(Passenger passenger) {
+        this.id = passenger.getId();
+        this.name = passenger.getName();
+        this.surname = passenger.getSurname();
+        this.phone = passenger.getPhone();
+    }
+
     public Passenger DtoToPassenger(){
         return new Passenger(name, surname, phone);
     }

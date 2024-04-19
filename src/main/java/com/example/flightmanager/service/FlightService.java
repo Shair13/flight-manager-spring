@@ -1,7 +1,9 @@
 package com.example.flightmanager.service;
 
 import com.example.flightmanager.dto.FlightDTO;
+import com.example.flightmanager.exception.DuplicatePassengerException;
 import com.example.flightmanager.exception.FlightNotFoundException;
+import com.example.flightmanager.exception.NoAvailableSeatsException;
 import com.example.flightmanager.model.Flight;
 import com.example.flightmanager.model.Passenger;
 import com.example.flightmanager.repository.FlightRepository;
@@ -22,29 +24,41 @@ public class FlightService {
 
     @Transactional
     public FlightDTO addFlight(FlightDTO flightDTO) {
-        return flightRepository.save(flightDTO.DtoToFlight()).flightToDto();
+        Flight flight = flightRepository.save(flightDTO.DtoToFlight());
+        return new FlightDTO(flight);
     }
 
     public FlightDTO addPassenger(int flightId, int passengerId) {
         Flight flight = getFlight(flightId);
         Passenger passenger = passengerService.getPassenger(passengerId);
 
-        flight.checkAvailableSeats(flight);
-        flight.checkDuplicatePassenger(flight, passenger);
+        validateFlightForAddPassenger(flight, passenger);
 
         flight.addPassenger(passenger);
         flightRepository.save(flight);
-        return flight.flightToDto();
+        return new FlightDTO(flight);
+    }
+
+    public Flight getFlight(int id) {
+        return flightRepository.findById(id).orElseThrow(() -> new FlightNotFoundException("Flight with id = " + id + " not found"));
     }
 
     public List<FlightDTO> readAllFlights() {
         return flightRepository.findAll().stream()
-                .map(Flight::flightToDto).toList();
+                .map(FlightDTO::new).toList();
     }
 
     public List<FlightDTO> readAllFlights(Pageable pageable) {
         return flightRepository.findAll(pageable).stream()
-                .map(Flight::flightToDto).toList();
+                .map(FlightDTO::new).toList();
+    }
+
+    @Transactional
+    public FlightDTO updateFlight(int id, Flight toUpdate) {
+        Flight flight = getFlight(id);
+        flight.flightUpdate(toUpdate);
+        flightRepository.save(flight);
+        return new FlightDTO(flight);
     }
 
     @Transactional
@@ -54,15 +68,7 @@ public class FlightService {
 
         flight.deletePassenger(passenger);
         flightRepository.save(flight);
-        return flight.flightToDto();
-    }
-
-    @Transactional
-    public FlightDTO updateFlight(int id, Flight toUpdate) {
-        Flight flight = getFlight(id);
-        flight.flightUpdate(toUpdate);
-        flightRepository.save(flight);
-        return flight.flightToDto();
+        return new FlightDTO(flight);
     }
 
     @Transactional
@@ -70,16 +76,21 @@ public class FlightService {
         flightRepository.delete(getFlight(id));
     }
 
-    public Flight getFlight(int id) {
-        return flightRepository.findById(id).orElseThrow(() -> new FlightNotFoundException("Flight with id = " + id + " not found"));
-    }
-
     public List<FlightDTO> search(String route, LocalDateTime date, Integer availableSeats) {
         return flightRepository.findByRouteContainingAndDateAfterAndAvailableSeatsGreaterThanEqual(
                         route != null ? route : "",
                         date != null ? date : LocalDateTime.now(),
                         availableSeats != null ? availableSeats : 0).stream()
-                .map(Flight::flightToDto)
+                .map(FlightDTO::new)
                 .toList();
+    }
+
+    void validateFlightForAddPassenger(Flight flight, Passenger passenger) {
+        if (flight.checkAvailableSeats()) {
+            throw new NoAvailableSeatsException("No available seats on flight number LO" + flight.getNumber() + ".");
+        }
+        if (flight.checkDuplicatePassenger(passenger)) {
+            throw new DuplicatePassengerException("Passenger with id " + passenger.getId() + " is already added to flight number LO" + flight.getNumber() + ".");
+        }
     }
 }
