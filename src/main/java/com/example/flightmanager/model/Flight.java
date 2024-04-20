@@ -60,7 +60,7 @@ public class Flight {
         return availableSeats < 1;
     }
 
-    public boolean checkDuplicatePassenger(Passenger passenger) {
+    public boolean checkForPassengerInFlight(Passenger passenger) {
         return passengers.contains(passenger);
     }
 }

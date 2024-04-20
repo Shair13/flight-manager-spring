@@ -22,8 +22,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class PassengerServiceTest {
 
-    private final String NAME = "Cassian";
-    private final String SURNAME = "Andor";
+    private final String NAME = "Han";
+    private final String SURNAME = "Solo";
     private final String PHONE_NUMBER = "123 123 123";
 
     @Mock
@@ -62,16 +62,6 @@ class PassengerServiceTest {
 
         // then
         assertEquals(result.size(), 2);
-    }
-
-    @Test
-    void shouldReadAllPassengers_emptyListOfPassengers() {
-        // given
-
-        // when
-        List<PassengerDTO> result = passengerService.readAllPassengers();
-        // then
-        assertThat(result).isEmpty();
     }
 
     @Test

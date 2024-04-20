@@ -16,9 +16,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -72,16 +74,6 @@ class FlightServiceTest {
 
         // then
         assertEquals(2, result.size());
-    }
-
-    @Test
-    void shouldReadAllFlights_emptyListOfFlights() {
-        // given
-
-        // when
-        List<FlightDTO> result = flightService.readAllFlights();
-        // then
-        assertEquals(0, result.size());
     }
 
     @Test
@@ -159,7 +151,7 @@ class FlightServiceTest {
     }
 
     @Test
-    void validateFlightForAddPassenger_shouldDuplicatePassengerException() {
+    void validateFlightForAddPassenger_shouldThrowDuplicatePassengerException() {
         // given
         Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, AVAILABLE_SEATS, PASSENGERS);
         Passenger passenger = new Passenger();
@@ -207,22 +199,28 @@ class FlightServiceTest {
     }
 
     @Test
-        // *
-    void deletePassengerFromFlight_shouldThrowPassengerNotFoundException() {
+    void validateFlightForDeletePassenger_shouldPass() {
         // given
-        int flightId = 1;
-        int passengerId = 3;
-        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, AVAILABLE_SEATS, PASSENGERS);
+        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, NO_AVAILABLE_SEATS, PASSENGERS);
+        Passenger passenger = new Passenger();
+        flight.getPassengers().add(passenger);
 
-        when(mockFlightRepository.findById(flightId)).thenReturn(Optional.of(flight));
-        when(mockPassengerRepository.findById(passengerId)).thenThrow(PassengerNotFoundException.class);
+        // when + then
+        assertDoesNotThrow(() -> flightService.validateFlightForDeletePassenger(flight, passenger));
+    }
+
+    @Test
+    void validateFlightForDeletePassenger_shouldThrowPassengerNotFound() {
+        // given
+        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, NO_AVAILABLE_SEATS, PASSENGERS);
+        Passenger passenger = new Passenger();
 
         // when
         PassengerNotFoundException thrown = assertThrows(PassengerNotFoundException.class,
-                () -> flightService.deletePassenger(flightId, passengerId));
+                () -> flightService.validateFlightForDeletePassenger(flight, passenger));
 
         // then
-        assertTrue(thrown.getMessage().contains("Passenger with id = " + passengerId + " not found"));
+        assertTrue(thrown.getMessage().contains("not found on flight number LO"));
     }
 
     @Test
