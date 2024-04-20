@@ -4,6 +4,7 @@ import com.example.flightmanager.dto.FlightDTO;
 import com.example.flightmanager.exception.DuplicatePassengerException;
 import com.example.flightmanager.exception.FlightNotFoundException;
 import com.example.flightmanager.exception.NoAvailableSeatsException;
+import com.example.flightmanager.exception.PassengerNotFoundException;
 import com.example.flightmanager.model.Flight;
 import com.example.flightmanager.model.Passenger;
 import com.example.flightmanager.repository.FlightRepository;
@@ -66,6 +67,8 @@ public class FlightService {
         Flight flight = getFlight(flightId);
         Passenger passenger = passengerService.getPassenger(passengerId);
 
+        validateFlightForDeletePassenger(flight, passenger);
+
         flight.deletePassenger(passenger);
         flightRepository.save(flight);
         return new FlightDTO(flight);
@@ -89,8 +92,14 @@ public class FlightService {
         if (flight.checkAvailableSeats()) {
             throw new NoAvailableSeatsException("No available seats on flight number LO" + flight.getNumber() + ".");
         }
-        if (flight.checkDuplicatePassenger(passenger)) {
+        if (flight.checkForPassengerInFlight(passenger)) {
             throw new DuplicatePassengerException("Passenger with id " + passenger.getId() + " is already added to flight number LO" + flight.getNumber() + ".");
+        }
+    }
+
+    void validateFlightForDeletePassenger(Flight flight, Passenger passenger) {
+        if (!flight.checkForPassengerInFlight(passenger)) {
+            throw new PassengerNotFoundException("Passenger with id = " + passenger.getId() + " not found on flight number LO" + flight.getNumber() + ".");
         }
     }
 }

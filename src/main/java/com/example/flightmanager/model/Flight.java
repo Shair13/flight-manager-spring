@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode
 @Entity
 @Table(name = "flights")
 public class Flight {
@@ -58,7 +60,7 @@ public class Flight {
         return availableSeats < 1;
     }
 
-    public boolean checkDuplicatePassenger(Passenger passenger) {
+    public boolean checkForPassengerInFlight(Passenger passenger) {
         return passengers.contains(passenger);
     }
 }
