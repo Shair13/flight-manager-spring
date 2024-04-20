@@ -68,8 +68,8 @@ public class FlightController {
     @GetMapping("/search")
     public List<FlightDTO> searchFlights(
             @RequestParam(required = false) String route,
-            @RequestParam(required = false) LocalDateTime date,
+            @RequestParam(required = false) LocalDateTime departure,
             @RequestParam(required = false) Integer availableSeats) {
-        return flightService.search(route, date, availableSeats);
+        return flightService.search(route, departure, availableSeats);
     }
 }

@@ -21,7 +21,7 @@ public class FlightDTO {
     @NotBlank(message = "Route cannot be an empty field.")
     private String route;
     @Future(message = "Must be a future date.")
-    private LocalDateTime date;
+    private LocalDateTime departure;
     @Min(value = 0, message = "Available seats must not be less than 0.")
     private int availableSeats;
     private Set<Passenger> passengers;
@@ -30,12 +30,12 @@ public class FlightDTO {
         this.id = flight.getId();
         this.number = flight.getNumber();
         this.route = flight.getRoute();
-        this.date = flight.getDate();
+        this.departure = flight.getDeparture();
         this.availableSeats = flight.getAvailableSeats();
         this.passengers = flight.getPassengers();
     }
 
     public Flight DtoToFlight(){
-        return new Flight(number, route, date, availableSeats, passengers);
+        return new Flight(number, route, departure, availableSeats, passengers);
     }
 }

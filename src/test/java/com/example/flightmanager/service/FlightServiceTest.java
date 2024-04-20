@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
 class FlightServiceTest {
     private final int FLIGHT_NUMBER = 10;
     private final String FLIGHT_ROUTE = "Chicago - Warsaw";
-    private final LocalDateTime DATE = LocalDateTime.now().plusDays(2);
+    private final LocalDateTime DEPARTURE = LocalDateTime.now().plusDays(2);
     private int AVAILABLE_SEATS = 100;
     private int NO_AVAILABLE_SEATS = 0;
     Set<Passenger> PASSENGERS = new HashSet<>();
@@ -45,8 +45,8 @@ class FlightServiceTest {
     @Test
     void shouldAddNewFlight() {
         // given
-        FlightDTO flightDTO = new FlightDTO(-1, FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, AVAILABLE_SEATS, PASSENGERS);
-        Flight savedFlight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, AVAILABLE_SEATS, PASSENGERS);
+        FlightDTO flightDTO = new FlightDTO(-1, FLIGHT_NUMBER, FLIGHT_ROUTE, DEPARTURE, AVAILABLE_SEATS, PASSENGERS);
+        Flight savedFlight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DEPARTURE, AVAILABLE_SEATS, PASSENGERS);
 
         when(mockFlightRepository.save(flightDTO.DtoToFlight())).thenReturn(savedFlight);
 
@@ -56,7 +56,7 @@ class FlightServiceTest {
         // then
         assertEquals(FLIGHT_NUMBER, result.getNumber());
         assertEquals(FLIGHT_ROUTE, result.getRoute());
-        assertEquals(DATE, result.getDate());
+        assertEquals(DEPARTURE, result.getDeparture());
         assertEquals(AVAILABLE_SEATS, result.getAvailableSeats());
         assertEquals(PASSENGERS, result.getPassengers());
     }
@@ -81,10 +81,10 @@ class FlightServiceTest {
         // given
         int id = 13;
         Set<Passenger> passengers = new HashSet<>();
-        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, AVAILABLE_SEATS, passengers);
+        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DEPARTURE, AVAILABLE_SEATS, passengers);
         Passenger passenger = new Passenger();
         passengers.add(passenger);
-        Flight toUpdate = new Flight(20, "Roma - Stokholm", DATE.plusDays(1), 120, passengers);
+        Flight toUpdate = new Flight(20, "Roma - Stokholm", DEPARTURE.plusDays(1), 120, passengers);
         when(mockFlightRepository.findById(id)).thenReturn(Optional.of(flight));
 
         // when
@@ -93,7 +93,7 @@ class FlightServiceTest {
         // then
         assertEquals(toUpdate.getNumber(), result.getNumber());
         assertEquals(toUpdate.getRoute(), result.getRoute());
-        assertEquals(toUpdate.getDate(), result.getDate());
+        assertEquals(toUpdate.getDeparture(), result.getDeparture());
         assertEquals(toUpdate.getAvailableSeats(), result.getAvailableSeats());
         assertEquals(toUpdate.getPassengers().size(), result.getPassengers().size());
     }
@@ -102,7 +102,7 @@ class FlightServiceTest {
     void updateFlight_shouldThrowFlightNotFoundException() {
         // given
         int id = 13;
-        Flight toUpdate = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, AVAILABLE_SEATS, PASSENGERS);
+        Flight toUpdate = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DEPARTURE, AVAILABLE_SEATS, PASSENGERS);
 
         // when
         FlightNotFoundException thrown = assertThrows(FlightNotFoundException.class,
@@ -115,7 +115,7 @@ class FlightServiceTest {
     @Test
     void shouldAddPassengerToFlight() {
         // given
-        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, AVAILABLE_SEATS, PASSENGERS);
+        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DEPARTURE, AVAILABLE_SEATS, PASSENGERS);
         Passenger passenger = new Passenger("Jan", "Nowak", "111 222 333");
 
         // when
@@ -130,7 +130,7 @@ class FlightServiceTest {
     @Test
     void validateFlightForAddPassenger_shouldPass() {
         // given
-        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, AVAILABLE_SEATS, PASSENGERS);
+        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DEPARTURE, AVAILABLE_SEATS, PASSENGERS);
         Passenger passenger = new Passenger();
 
         // when + then
@@ -140,7 +140,7 @@ class FlightServiceTest {
     @Test
     void validateFlightForAddPassenger_shouldThrowNoAvailableSeatsException() {
         // given
-        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, NO_AVAILABLE_SEATS, PASSENGERS);
+        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DEPARTURE, NO_AVAILABLE_SEATS, PASSENGERS);
 
         // when
         NoAvailableSeatsException thrown = assertThrows(NoAvailableSeatsException.class,
@@ -153,7 +153,7 @@ class FlightServiceTest {
     @Test
     void validateFlightForAddPassenger_shouldThrowDuplicatePassengerException() {
         // given
-        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, AVAILABLE_SEATS, PASSENGERS);
+        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DEPARTURE, AVAILABLE_SEATS, PASSENGERS);
         Passenger passenger = new Passenger();
         flight.addPassenger(passenger);
 
@@ -173,7 +173,7 @@ class FlightServiceTest {
         Set<Passenger> passengers = new HashSet<>();
         Passenger passenger = new Passenger();
         passengers.add(passenger);
-        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, AVAILABLE_SEATS, passengers);
+        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DEPARTURE, AVAILABLE_SEATS, passengers);
         when(mockFlightRepository.findById(flightId)).thenReturn(Optional.of(flight));
         when(passengerService.getPassenger(passengerId)).thenReturn(passenger);
 
@@ -201,7 +201,7 @@ class FlightServiceTest {
     @Test
     void validateFlightForDeletePassenger_shouldPass() {
         // given
-        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, NO_AVAILABLE_SEATS, PASSENGERS);
+        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DEPARTURE, NO_AVAILABLE_SEATS, PASSENGERS);
         Passenger passenger = new Passenger();
         flight.getPassengers().add(passenger);
 
@@ -212,7 +212,7 @@ class FlightServiceTest {
     @Test
     void validateFlightForDeletePassenger_shouldThrowPassengerNotFound() {
         // given
-        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, NO_AVAILABLE_SEATS, PASSENGERS);
+        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DEPARTURE, NO_AVAILABLE_SEATS, PASSENGERS);
         Passenger passenger = new Passenger();
 
         // when

@@ -20,5 +20,5 @@ public interface FlightRepository {
 
     void delete(Flight entity);
 
-    List<Flight> findByRouteContainingAndDateAfterAndAvailableSeatsGreaterThanEqual(String route, LocalDateTime date, int availableSeats);
+    List<Flight> findByRouteContainingAndDateAfterAndAvailableSeatsGreaterThanEqual(String route, LocalDateTime departure, int availableSeats);
 }

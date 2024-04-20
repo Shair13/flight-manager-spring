@@ -25,16 +25,16 @@ public class Flight {
     @NotBlank(message = "Route cannot be an empty field.")
     private String route;
     @Future(message = "Must be a future date.")
-    private LocalDateTime date;
+    private LocalDateTime departure;
     @Min(value = 0, message = "Available seats must not be less than 0.")
     private int availableSeats;
     @ManyToMany
     private Set<Passenger> passengers;
 
-    public Flight(int number, String route, LocalDateTime date, int availableSeats, Set<Passenger> passengers) {
+    public Flight(int number, String route, LocalDateTime departure, int availableSeats, Set<Passenger> passengers) {
         this.number = number;
         this.route = route;
-        this.date = date;
+        this.departure = departure;
         this.availableSeats = availableSeats;
         this.passengers = passengers;
     }
@@ -42,7 +42,7 @@ public class Flight {
     public void flightUpdate(final Flight source) {
         number = source.number;
         route = source.route;
-        date = source.date;
+        departure = source.departure;
         availableSeats = source.availableSeats;
     }
 

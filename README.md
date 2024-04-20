@@ -71,7 +71,7 @@ Adds a new flight to the system.
   "id": 1,
   "number": 3,
   "route": "Warsaw - London",
-  "date": "2024-07-23T08:00:00",
+  "departure": "2024-07-23T08:00:00",
   "availableSeats": 96,
   "passengers": null
 }
@@ -83,7 +83,7 @@ Adds a new flight to the system.
 
 ```json
 {
-    "date": "Must be a future date.",
+    "departure": "Must be a future date.",
     "number": "Flight number must be greater than 0.",
     "route": "Route cannot be an empty field.",
     "availableSeats": "Available seats must be not be less than 0."
@@ -117,9 +117,6 @@ Returns all flights from database.
 **Request Body:**
 Empty.
 
-**Data types:**
-None
-
 **Response:**
 - Status Code: **200 OK**
 - Sample Response Body:
@@ -130,7 +127,7 @@ None
       "id": 1,
       "number": 10,
       "route": "Warsaw - Berlin",
-      "date": "2024-04-30T12:35:00",
+      "departure": "2024-04-30T12:35:00",
       "availableSeats": 140,
       "passengers": []
    },
@@ -138,7 +135,7 @@ None
       "id": 2,
       "number": 27,
       "route": "Palermo - Warsaw",
-      "date": "2024-05-01T17:00:00",
+      "departure": "2024-05-01T17:00:00",
       "availableSeats": 130,
       "passengers": []
    },
@@ -146,7 +143,7 @@ None
       "id": 3,
       "number": 13,
       "route": "Warsaw - Oslo",
-      "date": "2024-06-01T12:00:00",
+      "departure": "2024-06-01T12:00:00",
       "availableSeats": 129,
       "passengers": [
          {
@@ -173,9 +170,6 @@ Returns flight by id from database.
 **Request Body:**
 Empty.
 
-**Data types:**
-None
-
 **Response:**
 - Status Code: **200 OK**
 - Sample Response Body:
@@ -185,7 +179,7 @@ None
    "id": 3,
    "number": 13,
    "route": "Warsaw - Oslo",
-   "date": "2024-06-01T12:00:00",
+   "departure": "2024-06-01T12:00:00",
    "availableSeats": 129,
    "passengers": [
       {
@@ -214,6 +208,7 @@ None
 
 <details>
 <summary>Details - click to open</summary>
+
 **Description:**
 Updates existing flight.
 
@@ -223,7 +218,7 @@ Updates existing flight.
 ```json
 {
    "number": "4",
-   "date": "2024-07-23T08:00:00",
+   "departure": "2024-07-23T08:00:00",
    "route": "Warsaw - Chicago",
    "availableSeats": 120
 }
@@ -236,7 +231,7 @@ Updates existing flight.
 
 **Response:**
 - Status Code: **200 OK**
-- Body: Object representing the added flight.
+- Body: Object representing the updated flight.
 - Sample Response Body:
 
 ```json
@@ -244,7 +239,7 @@ Updates existing flight.
    "id": 3,
    "number": 4,
    "route": "Warsaw - Chicago",
-   "date": "2024-07-23T08:00:00",
+   "departure": "2024-07-23T08:00:00",
    "availableSeats": 120,
    "passengers": [
       {
@@ -263,7 +258,7 @@ Updates existing flight.
 
 ```json
 {
-    "date": "Must be a future date.",
+    "departure": "Must be a future date.",
     "number": "Flight number must be greater than 0.",
     "route": "Route cannot be an empty field.",
     "availableSeats": "Available seats must be not be less than 0."
@@ -277,6 +272,178 @@ Updates existing flight.
 "error": "JSON parse error: Cannot deserialize value of type `int` from String 'd': not a valid `int` value"
 }
 ```
+- Flight not found:
+
+```json
+{
+    "error": "Flight with id = 39 not found"
+}
+```
+
+</details>
+
+## ● Adds Passenger to Flight
+
+### **Endpoint:** `PATCH` `/flights/add/{flightId}/{passengerId}`
+
+<details>
+<summary>Details - click to open</summary>
+
+**Description:**
+Adds a passenger to the selected flight.
+
+**Request Body:**
+Empty.
+
+**Response:**
+- Status Code: **200 OK**
+- Body: Object representing the flight with added passengers.
+- Sample Response Body:
+
+```json
+{
+   "id": 2,
+   "number": 13,
+   "route": "Warsaw - Oslo",
+   "date": "2024-06-01T12:00:00",
+   "availableSeats": 127,
+   "passengers": [
+      {
+         "id": 1,
+         "name": "Han",
+         "surname": "Solo",
+         "phone": "123 456 789"
+      },
+      {
+         "id": 2,
+         "name": "Leia",
+         "surname": "Organa",
+         "phone": "789 456 123"
+      }
+   ]
+}
+```
+
+**Errors:**
+
+- Flight not found:
+
+```json
+{
+    "error": "Flight with id = 39 not found"
+}
+```
+
+- Passenger not found:
+
+```json
+{
+   "error": "Passenger with id = 124 not found"
+}
+```
+
+- Passenger is already added:
+
+```json
+{
+   "error": "Passenger with id 2 is already added to flight number LO13."
+}
+```
+
+- No available seats:
+
+```json
+{
+   "error": "No available seats on flight number LO13."
+}
+```
+
+</details>
+
+## ● Removes Passenger from Flight
+
+### **Endpoint:** `PATCH` `/flights/delete/{flightId}/{passengerId}`
+
+<details>
+<summary>Details - click to open</summary>
+
+**Description:**
+Removes a passenger from the selected flight.
+
+**Request Body:**
+Empty.
+
+**Response:**
+- Status Code: **200 OK**
+- Body: Object representing the flight with passengers who left.
+- Sample Response Body:
+
+```json
+{
+   "id": 2,
+   "number": 13,
+   "route": "Warsaw - Oslo",
+   "date": "2024-06-01T12:00:00",
+   "availableSeats": 128,
+   "passengers": [
+      {
+         "id": 2,
+         "name": "Leia",
+         "surname": "Organa",
+         "phone": "789 456 123"
+      }
+   ]
+}
+```
+
+**Errors:**
+
+- Flight not found:
+
+```json
+{
+    "error": "Flight with id = 39 not found"
+}
+```
+
+- Passenger not found:
+
+```json
+{
+   "error": "Passenger with id = 124 not found"
+}
+```
+
+- Passenger not found on selected flight:
+
+```json
+{
+   "error": "Passenger with id = 1 not found on flight number LO13."
+}
+```
+
+</details>
+
+## ● Removes Flight from database
+
+### **Endpoint:** `DELETE` `flights/{id}`
+
+<details>
+<summary>Details - click to open</summary>
+
+**Description:**
+Removes a Flight from database.
+
+**Request Body:**
+Empty.
+
+**Response:**
+- Status Code: **204 No Content**
+- Body: Empty.
+- Sample Response Body:
+
+**Errors:**
+
 - Flight not found:
 
 ```json

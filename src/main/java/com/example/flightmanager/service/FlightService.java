@@ -79,10 +79,10 @@ public class FlightService {
         flightRepository.delete(getFlight(id));
     }
 
-    public List<FlightDTO> search(String route, LocalDateTime date, Integer availableSeats) {
+    public List<FlightDTO> search(String route, LocalDateTime departure, Integer availableSeats) {
         return flightRepository.findByRouteContainingAndDateAfterAndAvailableSeatsGreaterThanEqual(
                         route != null ? route : "",
-                        date != null ? date : LocalDateTime.now(),
+                        departure != null ? departure : LocalDateTime.now(),
                         availableSeats != null ? availableSeats : 0).stream()
                 .map(FlightDTO::new)
                 .toList();
