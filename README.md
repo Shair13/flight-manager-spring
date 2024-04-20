@@ -34,12 +34,12 @@
 
 # API Documentation
 
-## ╰┈➤ Adding a New Flight
+## ● Adding a New Flight
 
 ### **Endpoint:** `POST` `/flights`
 
 <details>
-<summary>Documentation</summary>
+<summary>Details - click to open</summary>
 
 **Description:**
 Adds a new flight to the system.
@@ -100,11 +100,11 @@ Adds a new flight to the system.
 
 </details>
 
-## ╰┈➤ Get all Flights
+## ● Get all Flights
 
 ### **Endpoint:** `GET` `/flights`
 <details>
-<summary>Documentation</summary>
+<summary>Details - click to open</summary>
 
 **Description:**
 Returns all flights from database.
@@ -161,11 +161,11 @@ None
 ```
 </details>
 
-## ╰┈➤ Get Flight by id
+## ● Get Flight by id
 
 ### **Endpoint:** `GET` `/flights/{id}`
 <details>
-<summary>Documentation</summary>
+<summary>Details - click to open</summary>
 
 **Description:**
 Returns flight by id from database.
@@ -208,13 +208,12 @@ None
 ```
 </details>
 
-## ╰┈➤ Updates existing Flight
+## ● Updates existing Flight
 
 ### **Endpoint:** `PUT` `/flights/{id}`
 
 <details>
-<summary>Documentation</summary>
-
+<summary>Details - click to open</summary>
 **Description:**
 Updates existing flight.
 
