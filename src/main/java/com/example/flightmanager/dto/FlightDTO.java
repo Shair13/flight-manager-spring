@@ -7,11 +7,13 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class FlightDTO {
     private int id;
     @Min(value = 1, message = "Flight number must be greater than 0.")

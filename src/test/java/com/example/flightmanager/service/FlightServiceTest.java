@@ -4,7 +4,6 @@ import com.example.flightmanager.dto.FlightDTO;
 import com.example.flightmanager.exception.DuplicatePassengerException;
 import com.example.flightmanager.exception.FlightNotFoundException;
 import com.example.flightmanager.exception.NoAvailableSeatsException;
-import com.example.flightmanager.exception.PassengerNotFoundException;
 import com.example.flightmanager.model.Flight;
 import com.example.flightmanager.model.Passenger;
 import com.example.flightmanager.repository.FlightRepository;
@@ -21,11 +20,17 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class FlightServiceTest {
+    private final int FLIGHT_NUMBER = 10;
+    private final String FLIGHT_ROUTE = "Chicago - Warsaw";
+    private final LocalDateTime DATE = LocalDateTime.now().plusDays(2);
+    private int AVAILABLE_SEATS = 100;
+    private int NO_AVAILABLE_SEATS = 0;
+    Set<Passenger> PASSENGERS = new HashSet<>();
 
     @Mock
     FlightRepository mockFlightRepository;
@@ -37,45 +42,48 @@ class FlightServiceTest {
     @Test
     void shouldAddNewFlight() {
         // given
-        LocalDateTime date = LocalDateTime.now();
-        Flight flight = new Flight();
-        Flight savedFlight = new Flight(13, "Warsaw - London", date, 13, null);
-        when(mockFlightRepository.save(flight)).thenReturn(savedFlight);
-        FlightDTO flightDTO = mock(FlightDTO.class);
-        when(flightDTO.DtoToFlight()).thenReturn(flight);
+        FlightDTO flightDTO = new FlightDTO(1, FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, AVAILABLE_SEATS, PASSENGERS);
+        Flight savedFlight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, AVAILABLE_SEATS, PASSENGERS);
+
+        when(mockFlightRepository.save(flightDTO.DtoToFlight())).thenReturn(savedFlight);
+
         // when
         FlightDTO result = flightService.addFlight(flightDTO);
-        //then
-        assertThat(result.getNumber()).isEqualTo(savedFlight.getNumber());
-        assertThat(result.getRoute()).isEqualTo(savedFlight.getRoute());
-        assertThat(result.getDate()).isEqualTo(savedFlight.getDate());
-        assertThat(result.getAvailableSeats()).isEqualTo(savedFlight.getAvailableSeats());
-        assertThat(result.getPassengers()).isEqualTo(savedFlight.getPassengers());
+
+        // then
+        assertEquals(FLIGHT_NUMBER, result.getNumber());
+        assertEquals(FLIGHT_ROUTE, result.getRoute());
+        assertEquals(DATE, result.getDate());
+        assertEquals(AVAILABLE_SEATS, result.getAvailableSeats());
+        assertEquals(PASSENGERS, result.getPassengers());
     }
 
     @Test
     void validateFlightForAddPassenger_shouldThrowNoAvailableSeatsException() {
         // given
-        Flight flight = new Flight(10, "Chicago - Warsaw", null, 0, null);
+        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, NO_AVAILABLE_SEATS, PASSENGERS);
+
         // when
-        var exception = catchThrowable(() -> flightService.validateFlightForAddPassenger(flight, null));
+        NoAvailableSeatsException thrown = assertThrows(NoAvailableSeatsException.class,
+                () -> flightService.validateFlightForAddPassenger(flight, null));
+
         // then
-        assertThat(exception).isInstanceOf(NoAvailableSeatsException.class).hasMessageContaining("No available seats on flight number LO");
+        assertTrue(thrown.getMessage().contains("No available seats on flight number LO"));
     }
 
     @Test
     void validateFlightForAddPassenger_shouldDuplicatePassengerException() {
         // given
-        int availableSeats = 10;
-        Set<Passenger> passengers = new HashSet<>();
-        Flight flight = new Flight(10, "Chicago - Warsaw", null, availableSeats, passengers);
+        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, AVAILABLE_SEATS, PASSENGERS);
         Passenger passenger = new Passenger();
         flight.addPassenger(passenger);
+
         // when
-        var exception = catchThrowable(() -> flightService.validateFlightForAddPassenger(flight, passenger));
+        DuplicatePassengerException thrown = assertThrows(DuplicatePassengerException.class,
+                () -> flightService.validateFlightForAddPassenger(flight, passenger));
+
         // then
-        assertThat(exception).isInstanceOf(DuplicatePassengerException.class).hasMessageContaining("is already added to flight number LO");
-        assertThat(flight.getAvailableSeats()).isEqualTo(availableSeats - 1);
+        assertTrue(thrown.getMessage().contains("is already added to flight number LO"));
     }
 
     @Test
@@ -85,15 +93,18 @@ class FlightServiceTest {
         Flight flightTwo = new Flight();
         List<Flight> flights = List.of(flightOne, flightTwo);
         when(mockFlightRepository.findAll()).thenReturn(flights);
+
         // when
         List<FlightDTO> result = flightService.readAllFlights();
+
         // then
-        assertThat(result.size()).isEqualTo(2);
+        assertEquals(result.size(), 2);
     }
 
     @Test
     void shouldReadAllPassengers_emptyListOfFlights() {
         // given
+
         // when
         List<FlightDTO> result = flightService.readAllFlights();
         // then
@@ -104,21 +115,22 @@ class FlightServiceTest {
     void shouldUpdateFlight() {
         // given
         int id = 13;
-        LocalDateTime date = LocalDateTime.now();
         Set<Passenger> passengers = new HashSet<>();
-        Flight flight = new Flight(13, "Paris - Warsaw", date, 130, passengers);
+        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, AVAILABLE_SEATS, passengers);
         Passenger passenger = new Passenger();
         passengers.add(passenger);
-        Flight toUpdate = new Flight(20, "Roma - Stokholm", date.plusDays(1), 120, passengers);
+        Flight toUpdate = new Flight(20, "Roma - Stokholm", DATE.plusDays(1), 120, passengers);
         when(mockFlightRepository.findById(id)).thenReturn(Optional.of(flight));
+
         // when
         FlightDTO result = flightService.updateFlight(id, toUpdate);
+
         // then
-        assertThat(result.getNumber()).isEqualTo(toUpdate.getNumber());
-        assertThat(result.getRoute()).isEqualTo(toUpdate.getRoute());
-        assertThat(result.getDate()).isEqualTo(toUpdate.getDate());
-        assertThat(result.getAvailableSeats()).isEqualTo(toUpdate.getAvailableSeats());
-        assertThat(result.getPassengers().size()).isEqualTo(toUpdate.getPassengers().size());
+        assertEquals(result.getNumber(), toUpdate.getNumber());
+        assertEquals(result.getRoute(), toUpdate.getRoute());
+        assertEquals(result.getDate(), toUpdate.getDate());
+        assertEquals(result.getAvailableSeats(), toUpdate.getAvailableSeats());
+        assertEquals(result.getPassengers().size(), toUpdate.getPassengers().size());
     }
 
     @Test
@@ -126,35 +138,41 @@ class FlightServiceTest {
         // given
         int id = 13;
         Flight toUpdate = new Flight(20, "Roma - Stockholm", null, 120, null);
+
         // when
-        var exception = catchThrowable(() -> flightService.updateFlight(id, toUpdate));
+        FlightNotFoundException thrown = assertThrows(FlightNotFoundException.class,
+                () -> flightService.updateFlight(id, toUpdate));
+
         // then
-        assertThat(exception).isInstanceOf(FlightNotFoundException.class).hasMessageContaining("Flight with id = " + id + " not found");
+        assertTrue(thrown.getMessage().contains("Flight with id = " + id + " not found"));
     }
 
     @Test
     void shouldAddPassengerToFlight() {
         // given
-        LocalDateTime date = LocalDateTime.now().plusDays(2);
-        Set<Passenger> passengers = new HashSet<>();
-        Flight flight = new Flight(13, "Chicago - Warsaw", date, 100, passengers);
+        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, AVAILABLE_SEATS, PASSENGERS);
         Passenger passenger = new Passenger("Jan", "Nowak", "111 222 333");
+
         // when
         flight.addPassenger(passenger);
+
         // then
-        assertThat(flight.getPassengers()).contains(passenger);
-        assertThat(flight.getAvailableSeats()).isEqualTo(99);
+        assertTrue(flight.getPassengers().contains(passenger));
+        assertEquals(flight.getAvailableSeats(), AVAILABLE_SEATS - 1);
+        assertEquals(flight.getPassengers().size(), 1);
     }
 
     @Test
     void deletePassengerFromFlight_shouldThrowFlightNotFoundException() {
         // given
         int flightId = 1;
-        int passengerId = 3;
+
         // when
-        var exception = catchThrowable(() -> flightService.deletePassenger(flightId, passengerId));
+        FlightNotFoundException thrown = assertThrows(FlightNotFoundException.class,
+                () -> flightService.deletePassenger(flightId, anyInt()));
+
         // then
-        assertThat(exception).isInstanceOf(FlightNotFoundException.class).hasMessageContaining("Flight with id = 1 not found");
+        assertTrue(thrown.getMessage().contains("Flight with id = " + flightId + " not found"));
     }
 
     @Test
@@ -162,17 +180,19 @@ class FlightServiceTest {
         // given
         int flightId = 1;
         int passengerId = 3;
-        Passenger passenger = new Passenger();
         Set<Passenger> passengers = new HashSet<>();
+        Passenger passenger = new Passenger();
         passengers.add(passenger);
-        Flight flight = new Flight(13, "Gdańsk - Berlin", null, 100, passengers);
+        Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DATE, AVAILABLE_SEATS, passengers);
         when(mockFlightRepository.findById(flightId)).thenReturn(Optional.of(flight));
         when(passengerService.getPassenger(passengerId)).thenReturn(passenger);
+
         // when
         flightService.deletePassenger(flightId, passengerId);
+
         // then
         assertThat(flight.getPassengers()).isEmpty();
-        assertThat(flight.getAvailableSeats()).isEqualTo(101);
+        assertEquals(flight.getAvailableSeats(), AVAILABLE_SEATS + 1);
     }
 
     @Test
@@ -181,21 +201,24 @@ class FlightServiceTest {
         int id = 15;
         Flight flight = new Flight();
         when(mockFlightRepository.findById(id)).thenReturn(Optional.of(flight));
+
         // when
         Flight result = flightService.getFlight(15);
+
         // then
-        assertThat(result).isSameAs(flight);
+        assertEquals(flight, result);
     }
 
     @Test
     void getFlight_shouldThrowFlightNotFoundException() {
         // given
         int id = 15;
-        Flight flight = new Flight();
+
         // when
-        var exception = catchThrowable(() -> flightService.getFlight(15));
+        FlightNotFoundException thrown = assertThrows(FlightNotFoundException.class, () -> flightService.getFlight(id));
+
         // then
-        assertThat(exception).isInstanceOf(FlightNotFoundException.class).hasMessageContaining("Flight with id = " + id + " not found");
+        assertTrue(thrown.getMessage().contains("Flight with id = " + id + " not found"));
     }
 
     @Test
@@ -204,8 +227,10 @@ class FlightServiceTest {
         int flightId = 1;
         Flight flight = new Flight();
         when(mockFlightRepository.findById(flightId)).thenReturn(Optional.of(flight));
+
         // when
         flightService.deleteFlight(flightId);
+
         // then
         verify(mockFlightRepository, times(1)).delete(flight);
     }
@@ -214,9 +239,11 @@ class FlightServiceTest {
     public void deleteFlight_shouldThrowFlightNotFoundException() {
         // given
         int flightId = 1;
+
         // when
-        var exception = catchThrowable(() -> flightService.deleteFlight(flightId));
+        FlightNotFoundException thrown = assertThrows(FlightNotFoundException.class, () -> flightService.deleteFlight(flightId));
+
         // then
-        assertThat(exception).isInstanceOf(FlightNotFoundException.class).hasMessageContaining("Flight with id = 1 not found");
+        assertTrue(thrown.getMessage().contains("Flight with id = " + flightId + " not found"));
     }
 }
