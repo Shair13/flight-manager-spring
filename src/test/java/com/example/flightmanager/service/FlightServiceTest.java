@@ -31,16 +31,16 @@ class FlightServiceTest {
     private final LocalDateTime DEPARTURE = LocalDateTime.now().plusDays(2);
     private int AVAILABLE_SEATS = 100;
     private int NO_AVAILABLE_SEATS = 0;
-    Set<Passenger> PASSENGERS = new HashSet<>();
+    private Set<Passenger> PASSENGERS = new HashSet<>();
 
     @Mock
-    FlightRepository mockFlightRepository;
+    private FlightRepository mockFlightRepository;
     @Mock
-    PassengerService passengerService;
+    private PassengerService passengerService;
     @Mock
-    PassengerRepository mockPassengerRepository;
+    private PassengerRepository mockPassengerRepository;
     @InjectMocks
-    FlightService flightService;
+    private FlightService flightService;
 
     @Test
     void shouldAddNewFlight() {
@@ -251,7 +251,7 @@ class FlightServiceTest {
     }
 
     @Test
-    public void shouldDeleteFlightFromRepository() {
+    void shouldDeleteFlightFromRepository() {
         // given
         int flightId = 1;
         Flight flight = new Flight();
@@ -265,7 +265,7 @@ class FlightServiceTest {
     }
 
     @Test
-    public void deleteFlight_shouldThrowFlightNotFoundException() {
+    void deleteFlight_shouldThrowFlightNotFoundException() {
         // given
         int flightId = 1;
 

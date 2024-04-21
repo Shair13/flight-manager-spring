@@ -1,6 +1,5 @@
 package com.example.flightmanager.service;
 
-import com.example.flightmanager.dto.FlightDTO;
 import com.example.flightmanager.dto.PassengerDTO;
 import com.example.flightmanager.exception.PassengerNotFoundException;
 import com.example.flightmanager.model.Passenger;
@@ -13,9 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -27,9 +24,9 @@ class PassengerServiceTest {
     private final String PHONE_NUMBER = "123 123 123";
 
     @Mock
-    PassengerRepository mockPassengerRepository;
+    private PassengerRepository mockPassengerRepository;
     @InjectMocks
-    PassengerService passengerService;
+    private PassengerService passengerService;
 
     @Test
     void shouldAddPassenger() {
@@ -166,7 +163,7 @@ class PassengerServiceTest {
     }
 
     @Test
-    public void deleteFlight_shouldThrowFlightNotFoundException() {
+    void deleteFlight_shouldThrowFlightNotFoundException() {
         // given
         int id = 1;
 
