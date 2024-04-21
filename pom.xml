@@ -18,6 +18,8 @@
         <swagger-ui-version>2.5.0</swagger-ui-version>
         <jakarta-validation-version>3.0.2</jakarta-validation-version>
         <spring-boot-starter-version>3.2.4</spring-boot-starter-version>
+        <h2-version>2.2.224</h2-version>
+        <lombok-version>1.18.30</lombok-version>
     </properties>
     <dependencies>
         <dependency>
@@ -34,11 +36,13 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <version>${h2-version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>${lombok-version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
