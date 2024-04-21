@@ -3,6 +3,7 @@ package com.example.flightmanager.controller;
 import com.example.flightmanager.dto.FlightDTO;
 import com.example.flightmanager.model.Flight;
 import com.example.flightmanager.service.FlightService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/flights")
+@Tag(name = "Flights")
 public class FlightController {
 
 
