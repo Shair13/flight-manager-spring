@@ -93,7 +93,7 @@ public class FlightService {
             throw new NoAvailableSeatsException("No available seats on flight number LO" + flight.getNumber() + ".");
         }
         if (flight.checkForPassengerInFlight(passenger)) {
-            throw new DuplicatePassengerException("Passenger with id " + passenger.getId() + " is already added to flight number LO" + flight.getNumber() + ".");
+            throw new DuplicatePassengerException("Passenger with id = " + passenger.getId() + " is already added to flight number LO" + flight.getNumber() + ".");
         }
     }
 
