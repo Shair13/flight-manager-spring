@@ -41,6 +41,12 @@
 
 # API Documentation
 
+The documentation is also available at the following link after launching the application:
+
+   ```
+   localhost:8080/swagger-documentation
+   ```
+
 ## ● Adding a New Flight
 
 ### **Endpoint:** `POST` `/flights`
@@ -785,3 +791,7 @@ Empty.
 ```
 
 </details>
+
+# Contact
+
+- Email: cezary.wozakowski@gmail.com
