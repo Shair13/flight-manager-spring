@@ -80,7 +80,7 @@ public class FlightService {
     }
 
     public List<FlightDTO> search(String route, LocalDateTime departure, Integer availableSeats) {
-        return flightRepository.findByRouteContainingAndDateAfterAndAvailableSeatsGreaterThanEqual(
+        return flightRepository.findByRouteContainingAndDepartureAfterAndAvailableSeatsGreaterThanEqual(
                         route != null ? route : "",
                         departure != null ? departure : LocalDateTime.now(),
                         availableSeats != null ? availableSeats : 0).stream()

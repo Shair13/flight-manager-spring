@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface SqlFlightRepository extends FlightRepository, JpaRepository<Flight, Integer> {
     @Override
-    List<Flight> findByRouteContainingAndDateAfterAndAvailableSeatsGreaterThanEqual(String route, LocalDateTime departure, int availableSeats);
+    List<Flight> findByRouteContainingAndDepartureAfterAndAvailableSeatsGreaterThanEqual(String route, LocalDateTime departure, int availableSeats);
 }
