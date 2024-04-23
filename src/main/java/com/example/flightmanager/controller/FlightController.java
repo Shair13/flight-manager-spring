@@ -27,7 +27,7 @@ public class FlightController {
     @PostMapping
     public ResponseEntity<FlightDTO> addNewFlight(@RequestBody @Valid FlightDTO flightDTO) {
         FlightDTO result = flightService.addFlight(flightDTO);
-        return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
+        return ResponseEntity.created(URI.create("/" + result.id())).body(result);
     }
 
     @GetMapping(params = {"!sort", "!page", "!size"})
@@ -42,8 +42,7 @@ public class FlightController {
 
     @GetMapping("/{id}")
     public FlightDTO findFlightById(@PathVariable int id) {
-        Flight flight = flightService.getFlight(id);
-        return new FlightDTO(flight);
+        return flightService.getFlightDto(id);
     }
 
     @PutMapping("/{id}")

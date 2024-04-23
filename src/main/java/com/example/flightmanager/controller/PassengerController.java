@@ -14,17 +14,20 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/passengers")
 @Tag(name = "Passengers")
 public class PassengerController {
 
     private final PassengerService passengerService;
 
+    public PassengerController(PassengerService passengerService) {
+        this.passengerService = passengerService;
+    }
+
     @PostMapping
     public ResponseEntity<PassengerDTO> addNewPassenger(@RequestBody @Valid PassengerDTO passengerDTO) {
         PassengerDTO result = passengerService.addPassenger(passengerDTO);
-        return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
+        return ResponseEntity.created(URI.create("/" + result.id())).body(result);
     }
 
     @GetMapping(params = {"!sort", "!page", "!size"})

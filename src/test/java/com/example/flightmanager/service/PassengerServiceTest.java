@@ -2,6 +2,7 @@ package com.example.flightmanager.service;
 
 import com.example.flightmanager.dto.PassengerDTO;
 import com.example.flightmanager.exception.PassengerNotFoundException;
+import com.example.flightmanager.mapper.PassengerMapper;
 import com.example.flightmanager.model.Passenger;
 import com.example.flightmanager.repository.PassengerRepository;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,8 @@ class PassengerServiceTest {
 
     @Mock
     private PassengerRepository mockPassengerRepository;
+    @Mock
+    private PassengerMapper passengerMapper;
     @InjectMocks
     private PassengerService passengerService;
 
@@ -34,15 +37,17 @@ class PassengerServiceTest {
         PassengerDTO passengerDTO = new PassengerDTO(-1, NAME, SURNAME, PHONE_NUMBER);
         Passenger savedPassenger = new Passenger(NAME, SURNAME, PHONE_NUMBER);
 
-        when(mockPassengerRepository.save(passengerDTO.DtoToPassenger())).thenReturn(savedPassenger);
+        when(passengerMapper.dtoToEntity(passengerDTO)).thenReturn(savedPassenger);
+        when(mockPassengerRepository.save(savedPassenger)).thenReturn(savedPassenger);
+        when(passengerMapper.entityToDto(savedPassenger)).thenReturn(passengerDTO);
 
         // when
         PassengerDTO result = passengerService.addPassenger(passengerDTO);
 
         // then
-        assertEquals(NAME, result.getName());
-        assertEquals(SURNAME, result.getSurname());
-        assertEquals(PHONE_NUMBER, result.getPhone());
+        assertEquals(NAME, result.name());
+        assertEquals(SURNAME, result.surname());
+        assertEquals(PHONE_NUMBER, result.phone());
     }
 
     @Test
@@ -93,14 +98,17 @@ class PassengerServiceTest {
         // given
         int id = 10;
         Passenger passenger = new Passenger(NAME, SURNAME, PHONE_NUMBER);
+        PassengerDTO passengerDTO = new PassengerDTO(id, NAME, SURNAME, PHONE_NUMBER);
         when(mockPassengerRepository.findById(id)).thenReturn(Optional.of(passenger));
+        when(passengerMapper.entityToDto(passenger)).thenReturn(passengerDTO);
+
         // when
         PassengerDTO result = passengerService.getPassengerDto(id);
 
         // then
-        assertEquals(NAME, result.getName());
-        assertEquals(SURNAME, result.getSurname());
-        assertEquals(PHONE_NUMBER, result.getPhone());
+        assertEquals(NAME, result.name());
+        assertEquals(SURNAME, result.surname());
+        assertEquals(PHONE_NUMBER, result.phone());
     }
 
     @Test
@@ -122,16 +130,18 @@ class PassengerServiceTest {
         int id = 7;
         Passenger passenger = new Passenger(NAME, SURNAME, PHONE_NUMBER);
         Passenger toUpdate = new Passenger("Jan", "Kowalski", "100 200 300");
+        PassengerDTO passengerDTO = new PassengerDTO(id,"Jan", "Kowalski", "100 200 300");
 
         when(mockPassengerRepository.findById(id)).thenReturn(Optional.of(passenger));
+        when(passengerMapper.entityToDto(toUpdate)).thenReturn(passengerDTO);
 
         // when
         PassengerDTO result = passengerService.updatePassenger(id, toUpdate);
 
         // then
-        assertEquals(toUpdate.getName(), result.getName());
-        assertEquals(toUpdate.getSurname(), result.getSurname());
-        assertEquals(toUpdate.getPhone(), result.getPhone());
+        assertEquals(toUpdate.getName(), result.name());
+        assertEquals(toUpdate.getSurname(), result.surname());
+        assertEquals(toUpdate.getPhone(), result.phone());
     }
 
     @Test

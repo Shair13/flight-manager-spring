@@ -2,11 +2,10 @@ package com.example.flightmanager.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @EqualsAndHashCode
 @Entity
@@ -14,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class Passenger {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private int id;
     @NotBlank(message = "Name cannot be an empty field.")
     private String name;

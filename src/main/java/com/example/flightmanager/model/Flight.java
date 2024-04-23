@@ -4,14 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @EqualsAndHashCode
 @Entity
@@ -19,6 +18,7 @@ import java.util.Set;
 public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private int id;
     @Min(value = 1, message = "Flight number must be greater than 0.")
     private int number;

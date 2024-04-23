@@ -5,12 +5,14 @@ import com.example.flightmanager.exception.DuplicatePassengerException;
 import com.example.flightmanager.exception.FlightNotFoundException;
 import com.example.flightmanager.exception.NoAvailableSeatsException;
 import com.example.flightmanager.exception.PassengerNotFoundException;
+import com.example.flightmanager.mapper.FlightMapper;
 import com.example.flightmanager.model.Flight;
 import com.example.flightmanager.model.Passenger;
 import com.example.flightmanager.repository.FlightRepository;
 import com.example.flightmanager.repository.PassengerRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -29,14 +31,16 @@ class FlightServiceTest {
     private final int FLIGHT_NUMBER = 10;
     private final String FLIGHT_ROUTE = "Chicago - Warsaw";
     private final LocalDateTime DEPARTURE = LocalDateTime.now().plusDays(2);
-    private int AVAILABLE_SEATS = 100;
-    private int NO_AVAILABLE_SEATS = 0;
-    private Set<Passenger> PASSENGERS = new HashSet<>();
+    private final int AVAILABLE_SEATS = 100;
+    private final int NO_AVAILABLE_SEATS = 0;
+    private final Set<Passenger> PASSENGERS = new HashSet<>();
 
     @Mock
     private FlightRepository mockFlightRepository;
     @Mock
     private PassengerService passengerService;
+    @Mock
+    private FlightMapper flightMapper;
     @Mock
     private PassengerRepository mockPassengerRepository;
     @InjectMocks
@@ -48,17 +52,18 @@ class FlightServiceTest {
         FlightDTO flightDTO = new FlightDTO(-1, FLIGHT_NUMBER, FLIGHT_ROUTE, DEPARTURE, AVAILABLE_SEATS, PASSENGERS);
         Flight savedFlight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DEPARTURE, AVAILABLE_SEATS, PASSENGERS);
 
-        when(mockFlightRepository.save(flightDTO.DtoToFlight())).thenReturn(savedFlight);
+        when(mockFlightRepository.save(flightMapper.dtoToEntity(flightDTO))).thenReturn(savedFlight);
+        when(flightMapper.entityToDto(savedFlight)).thenReturn(flightDTO);
 
         // when
         FlightDTO result = flightService.addFlight(flightDTO);
 
         // then
-        assertEquals(FLIGHT_NUMBER, result.getNumber());
-        assertEquals(FLIGHT_ROUTE, result.getRoute());
-        assertEquals(DEPARTURE, result.getDeparture());
-        assertEquals(AVAILABLE_SEATS, result.getAvailableSeats());
-        assertEquals(PASSENGERS, result.getPassengers());
+        assertEquals(FLIGHT_NUMBER, result.number());
+        assertEquals(FLIGHT_ROUTE, result.route());
+        assertEquals(DEPARTURE, result.departure());
+        assertEquals(AVAILABLE_SEATS, result.availableSeats());
+        assertEquals(PASSENGERS, result.passengers());
     }
 
     @Test
@@ -85,17 +90,19 @@ class FlightServiceTest {
         Passenger passenger = new Passenger();
         passengers.add(passenger);
         Flight toUpdate = new Flight(20, "Roma - Stokholm", DEPARTURE.plusDays(1), 120, passengers);
+        FlightDTO flightDTO = new FlightDTO(id,20, "Roma - Stokholm", DEPARTURE.plusDays(1), 120, passengers);
         when(mockFlightRepository.findById(id)).thenReturn(Optional.of(flight));
+        when(flightMapper.entityToDto(toUpdate)).thenReturn(flightDTO);
 
         // when
         FlightDTO result = flightService.updateFlight(id, toUpdate);
 
         // then
-        assertEquals(toUpdate.getNumber(), result.getNumber());
-        assertEquals(toUpdate.getRoute(), result.getRoute());
-        assertEquals(toUpdate.getDeparture(), result.getDeparture());
-        assertEquals(toUpdate.getAvailableSeats(), result.getAvailableSeats());
-        assertEquals(toUpdate.getPassengers().size(), result.getPassengers().size());
+        assertEquals(toUpdate.getNumber(), result.number());
+        assertEquals(toUpdate.getRoute(), result.route());
+        assertEquals(toUpdate.getDeparture(), result.departure());
+        assertEquals(toUpdate.getAvailableSeats(), result.availableSeats());
+        assertEquals(toUpdate.getPassengers().size(), result.passengers().size());
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.example.flightmanager.service;
 
 import com.example.flightmanager.dto.PassengerDTO;
 import com.example.flightmanager.exception.PassengerNotFoundException;
+import com.example.flightmanager.mapper.PassengerMapper;
 import com.example.flightmanager.model.Passenger;
 import com.example.flightmanager.repository.PassengerRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,21 +17,22 @@ import java.util.List;
 public class PassengerService {
 
     private final PassengerRepository passengerRepository;
+    private final PassengerMapper passengerMapper;
 
     @Transactional
     public PassengerDTO addPassenger(PassengerDTO passengerDTO) {
-        Passenger passenger = passengerRepository.save(passengerDTO.DtoToPassenger());
-        return new PassengerDTO(passenger);
+        Passenger passenger = passengerMapper.dtoToEntity(passengerDTO);
+        return passengerMapper.entityToDto(passengerRepository.save(passenger));
     }
 
     public List<PassengerDTO> readAllPassengers() {
         return passengerRepository.findAll().stream()
-                .map(PassengerDTO::new).toList();
+                .map(passengerMapper::entityToDto).toList();
     }
 
     public List<PassengerDTO> readAllPassengers(Pageable pageable) {
         return passengerRepository.findAll(pageable).stream()
-                .map(PassengerDTO::new).toList();
+                .map(passengerMapper::entityToDto).toList();
     }
 
     public Passenger getPassenger(int id) {
@@ -38,8 +40,8 @@ public class PassengerService {
     }
 
     public PassengerDTO getPassengerDto(int id) {
-        Passenger passenger = passengerRepository.findById(id).orElseThrow(() -> new PassengerNotFoundException("Passenger with id = " + id + " not found"));
-        return new PassengerDTO(passenger);
+        return passengerMapper.entityToDto(passengerRepository.findById(id)
+                .orElseThrow(() -> new PassengerNotFoundException("Passenger with id = " + id + " not found")));
     }
 
     @Transactional
@@ -47,7 +49,7 @@ public class PassengerService {
         Passenger passenger = getPassenger(id);
         passenger.passengerUpdate(toUpdate);
         passengerRepository.save(passenger);
-        return new PassengerDTO(passenger);
+        return passengerMapper.entityToDto(passenger);
     }
 
     @Transactional

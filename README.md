@@ -402,7 +402,7 @@ Empty.
   "id": 2,
   "number": 13,
   "route": "Warsaw - Oslo",
-  "date": "2024-06-01T12:00:00",
+  "departure": "2024-06-01T12:00:00",
   "availableSeats": 127,
   "passengers": [
     {
@@ -483,7 +483,7 @@ Empty.
   "id": 2,
   "number": 13,
   "route": "Warsaw - Oslo",
-  "date": "2024-06-01T12:00:00",
+  "departure": "2024-06-01T12:00:00",
   "availableSeats": 128,
   "passengers": [
     {

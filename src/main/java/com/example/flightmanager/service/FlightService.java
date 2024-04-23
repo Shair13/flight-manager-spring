@@ -5,6 +5,7 @@ import com.example.flightmanager.exception.DuplicatePassengerException;
 import com.example.flightmanager.exception.FlightNotFoundException;
 import com.example.flightmanager.exception.NoAvailableSeatsException;
 import com.example.flightmanager.exception.PassengerNotFoundException;
+import com.example.flightmanager.mapper.FlightMapper;
 import com.example.flightmanager.model.Flight;
 import com.example.flightmanager.model.Passenger;
 import com.example.flightmanager.repository.FlightRepository;
@@ -22,11 +23,12 @@ public class FlightService {
 
     private final FlightRepository flightRepository;
     private final PassengerService passengerService;
+    private final FlightMapper flightMapper;
 
     @Transactional
     public FlightDTO addFlight(FlightDTO flightDTO) {
-        Flight flight = flightRepository.save(flightDTO.DtoToFlight());
-        return new FlightDTO(flight);
+        Flight flight = flightRepository.save(flightMapper.dtoToEntity(flightDTO));
+        return flightMapper.entityToDto(flight);
     }
 
     public FlightDTO addPassenger(int flightId, int passengerId) {
@@ -37,21 +39,26 @@ public class FlightService {
 
         flight.addPassenger(passenger);
         flightRepository.save(flight);
-        return new FlightDTO(flight);
+        return flightMapper.entityToDto(flight);
     }
 
     public Flight getFlight(int id) {
         return flightRepository.findById(id).orElseThrow(() -> new FlightNotFoundException("Flight with id = " + id + " not found"));
     }
 
+    public FlightDTO getFlightDto(int id) {
+        return flightMapper.entityToDto(flightRepository.findById(id)
+                .orElseThrow(() -> new FlightNotFoundException("Flight with id = " + id + " not found")));
+    }
+
     public List<FlightDTO> readAllFlights() {
         return flightRepository.findAll().stream()
-                .map(FlightDTO::new).toList();
+                .map(flightMapper::entityToDto).toList();
     }
 
     public List<FlightDTO> readAllFlights(Pageable pageable) {
         return flightRepository.findAll(pageable).stream()
-                .map(FlightDTO::new).toList();
+                .map(flightMapper::entityToDto).toList();
     }
 
     @Transactional
@@ -59,7 +66,7 @@ public class FlightService {
         Flight flight = getFlight(id);
         flight.flightUpdate(toUpdate);
         flightRepository.save(flight);
-        return new FlightDTO(flight);
+        return flightMapper.entityToDto(flight);
     }
 
     @Transactional
@@ -71,7 +78,7 @@ public class FlightService {
 
         flight.deletePassenger(passenger);
         flightRepository.save(flight);
-        return new FlightDTO(flight);
+        return flightMapper.entityToDto(flight);
     }
 
     @Transactional
@@ -84,7 +91,7 @@ public class FlightService {
                         route != null ? route : "",
                         departure != null ? departure : LocalDateTime.now(),
                         availableSeats != null ? availableSeats : 0).stream()
-                .map(FlightDTO::new)
+                .map(flightMapper::entityToDto)
                 .toList();
     }
 
