@@ -95,7 +95,8 @@ public class FlightService {
                 .toList();
     }
 
-    void validateFlightForAddPassenger(Flight flight, Passenger passenger) {
+
+   void validateFlightForAddPassenger(Flight flight, Passenger passenger) {
         if (flight.checkAvailableSeats()) {
             throw new NoAvailableSeatsException("No available seats on flight number LO" + flight.getNumber() + ".");
         }

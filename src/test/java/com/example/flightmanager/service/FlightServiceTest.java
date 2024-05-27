@@ -41,8 +41,6 @@ class FlightServiceTest {
     private PassengerService passengerService;
     @Mock
     private FlightMapper flightMapper;
-    @Mock
-    private PassengerRepository mockPassengerRepository;
     @InjectMocks
     private FlightService flightService;
 
