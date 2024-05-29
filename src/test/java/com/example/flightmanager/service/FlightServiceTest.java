@@ -87,8 +87,8 @@ class FlightServiceTest {
         Flight flight = new Flight(FLIGHT_NUMBER, FLIGHT_ROUTE, DEPARTURE, AVAILABLE_SEATS, passengers);
         Passenger passenger = new Passenger();
         passengers.add(passenger);
-        Flight toUpdate = new Flight(20, "Roma - Stokholm", DEPARTURE.plusDays(1), 120, passengers);
-        FlightDTO flightDTO = new FlightDTO(id,20, "Roma - Stokholm", DEPARTURE.plusDays(1), 120, passengers);
+        Flight toUpdate = new Flight(20, "Roma - Stockholm", DEPARTURE.plusDays(1), 120, passengers);
+        FlightDTO flightDTO = new FlightDTO(id,20, "Roma - Stockholm", DEPARTURE.plusDays(1), 120, passengers);
         when(mockFlightRepository.findById(id)).thenReturn(Optional.of(flight));
         when(flightMapper.entityToDto(toUpdate)).thenReturn(flightDTO);
 
