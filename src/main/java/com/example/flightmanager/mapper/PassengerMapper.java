@@ -7,9 +7,6 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface PassengerMapper {
-
-    PassengerMapper INSTANCE = Mappers.getMapper(PassengerMapper.class);
-
     PassengerDTO entityToDto(Passenger passenger);
     Passenger dtoToEntity(PassengerDTO passengerDTO);
 }
