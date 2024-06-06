@@ -8,7 +8,6 @@ import com.example.flightmanager.repository.PassengerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,7 +18,6 @@ public class PassengerService {
     private final PassengerRepository passengerRepository;
     private final PassengerMapper passengerMapper;
 
-    @Transactional
     public PassengerDTO addPassenger(PassengerDTO passengerDTO) {
         Passenger passenger = passengerMapper.dtoToEntity(passengerDTO);
         return passengerMapper.entityToDto(passengerRepository.save(passenger));
@@ -44,7 +42,6 @@ public class PassengerService {
                 .orElseThrow(() -> new PassengerNotFoundException("Passenger with id = " + id + " not found")));
     }
 
-    @Transactional
     public PassengerDTO updatePassenger(int id, Passenger toUpdate) {
         Passenger passenger = getPassenger(id);
         passenger.passengerUpdate(toUpdate);
@@ -52,7 +49,6 @@ public class PassengerService {
         return passengerMapper.entityToDto(passenger);
     }
 
-    @Transactional
     public void deletePassenger(int id) {
         passengerRepository.delete(getPassenger(id));
     }

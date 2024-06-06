@@ -61,7 +61,6 @@ public class FlightService {
                 .map(flightMapper::entityToDto).toList();
     }
 
-    @Transactional
     public FlightDTO updateFlight(int id, Flight toUpdate) {
         Flight flight = getFlight(id);
         flight.flightUpdate(toUpdate);
@@ -69,19 +68,17 @@ public class FlightService {
         return flightMapper.entityToDto(flight);
     }
 
-    @Transactional
     public FlightDTO deletePassenger(int flightId, int passengerId) {
-        Flight flight = getFlight(flightId);
-        Passenger passenger = passengerService.getPassenger(passengerId);
+            Flight flight = getFlight(flightId);
+            Passenger passenger = passengerService.getPassenger(passengerId);
 
-        validateFlightForDeletePassenger(flight, passenger);
+            validateFlightForDeletePassenger(flight, passenger);
 
-        flight.deletePassenger(passenger);
-        flightRepository.save(flight);
-        return flightMapper.entityToDto(flight);
+            flight.deletePassenger(passenger);
+            flightRepository.save(flight);
+            return flightMapper.entityToDto(flight);
     }
 
-    @Transactional
     public void deleteFlight(int id) {
         flightRepository.delete(getFlight(id));
     }
@@ -96,7 +93,7 @@ public class FlightService {
     }
 
 
-   void validateFlightForAddPassenger(Flight flight, Passenger passenger) {
+    void validateFlightForAddPassenger(Flight flight, Passenger passenger) {
         if (flight.checkAvailableSeats()) {
             throw new NoAvailableSeatsException("No available seats on flight number LO" + flight.getNumber() + ".");
         }
