@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ public class Flight {
     @NotBlank(message = "Route cannot be an empty field.")
     private String route;
     @Future(message = "Must be a future date.")
+    @NotNull
     private LocalDateTime departure;
     @Min(value = 0, message = "Available seats must not be less than 0.")
     private int availableSeats;
