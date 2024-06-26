@@ -50,6 +50,7 @@ public class PassengerService {
     }
 
     public void deletePassenger(int id) {
-        passengerRepository.delete(getPassenger(id));
+        Passenger passenger = getPassenger(id);
+        passengerRepository.delete(passenger);
     }
 }

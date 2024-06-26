@@ -45,7 +45,7 @@ class FlightControllerTest {
                 {
                 	"number": 13,
                     "route": "Warsaw - Oslo",
-                    "date": "2024-06-01T12:00:00",
+                    "departure": "2030-06-01T12:00:00",
                     "availableSeats": 1
                 }
                 """;
@@ -67,7 +67,7 @@ class FlightControllerTest {
                 {
                 	"number": 10,
                     "route": "",
-                    "date": "2020-06-01T12:00:00",
+                    "departure": "2020-06-01T12:00:00",
                     "availableSeats": -1
                 }
                 """;
@@ -133,7 +133,7 @@ class FlightControllerTest {
                 {
                 	"number": 15,
                     "route": "Warsaw - Oslo",
-                    "date": "2024-06-01T12:00:00",
+                    "departure": "2030-06-01T12:00:00",
                     "availableSeats": 15
                 }
                 """;
@@ -155,7 +155,7 @@ class FlightControllerTest {
                 {
                 	"number": 15,
                     "route": "Warsaw - Oslo",
-                    "date": "2024-06-01T12:00:00",
+                    "departure": "2029-06-01T12:00:00",
                     "availableSeats": 15
                 }
                 """;
